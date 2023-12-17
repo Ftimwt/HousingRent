@@ -11,9 +11,14 @@
   },
   "dependencies": {
     "@neshan-maps-platform/mapbox-gl-react": "^1.0.0",
+    "antd": "^5.12.2",
     "axios": "^1.6.2",
+    "localforage": "^1.10.0",
+    "match-sorter": "^6.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.1",
+    "sort-by": "^1.2.0",
     "universal-cookie": "^6.1.1"
   },
   "devDependencies": {
