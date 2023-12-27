@@ -23,12 +23,12 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView, TokenVerifyView,
 )
 
-from Estate.views import EstateUserViewSet
+from Estate.views import EstateUserViewSet, NearestEstatesAPIView
 from User.views.auth import AuthViewSet
 from User.views.user import UserViewSet
 
 router = DefaultRouter()
-router.register(r'estates', EstateUserViewSet)
+router.register(r'users/estates', EstateUserViewSet)
 router.register(r'auth', AuthViewSet, basename='auth')
 router.register(r'auth', UserViewSet, basename='auth')
 
@@ -41,6 +41,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index_view, name='index'),
     path('api/', include(router.urls)),
+
+    path('api/estates/nearest', NearestEstatesAPIView.as_view()),
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

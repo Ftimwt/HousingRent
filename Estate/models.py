@@ -21,5 +21,21 @@ class Estate(models.Model):
 
 
 class EstateUser(models.Model):
-    user = models.ForeignKey(Estate, on_delete=models.CASCADE)
-    estate = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    estate = models.ForeignKey(Estate, on_delete=models.CASCADE)
+    user_type = models.CharField(choices=ESTATE_USER_TYPES_CHOICES, max_length=25)
+
+
+class EstateFile(models.Model):
+    FILE_TYPES = (
+        ('photo', 'Photo'),
+        ('document', 'Document'),
+        ('other', 'Other'),
+    )
+
+    estate = models.ForeignKey(Estate, on_delete=models.CASCADE, related_name='files')
+    file_type = models.CharField(max_length=20, choices=FILE_TYPES)
+    file = models.FileField(upload_to='estate_files/')
+
+    def __str__(self):
+        return f"{self.file_type} - {self.file.name}"
