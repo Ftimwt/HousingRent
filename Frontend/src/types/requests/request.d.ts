@@ -1,3 +1,0 @@
-interface BaseResponse {
-    Detail: string;
-}

@@ -1,29 +1,34 @@
-import './App.css'
-import {useAuth} from "./context/auth.tsx";
-import {useEffect} from "react";
+import './styles/global.scss';
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Layout from "./layout";
+import Home from "./pages/home";
+import {ConfigProvider, ThemeConfig, theme} from "antd";
+
+const getTheme = (isDark?: boolean): ThemeConfig => ({
+    token: {
+        fontSize: 14,
+        colorPrimary: import.meta.env.VITE_COLOR_PRIMARY ?? '#e6be2a',
+        colorFillSecondary: import.meta.env.VITE_COLOR_SECONDARY,
+        fontFamily: 'vazirmatn',
+        colorLink: import.meta.env.VITE_COLOR_PRIMARY ?? '#e6be2a',
+        colorPrimaryBg: import.meta.env.VITE_COLOR_PRIMARY,
+    },
+    algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+});
 
 function App() {
-  const {user, login, logout} = useAuth();
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
-
-  function handleLogin() {
-    console.log('login')
-    login("abolfazlalz", "123456").then(console.log);
-  }
-
-  function handleLogout() {
-    logout();
-  }
-
-  return (
-      <div>
-        <button onClick={handleLogin}>login</button>
-        <button onClick={handleLogout}>Logout</button>
-      </div>
-  )
+    return (
+        <ConfigProvider direction="rtl" theme={getTheme()}>
+            <BrowserRouter>
+                <Layout>
+                    <Routes>
+                        <Route path="/" element={<Home/>}>
+                        </Route>
+                    </Routes>
+                </Layout>
+            </BrowserRouter>
+        </ConfigProvider>
+    );
 }
 
 export default App

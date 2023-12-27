@@ -1,18 +1,27 @@
 import React, {useEffect} from "react";
 
-type Props = {
-    children?: React.ReactNode;
-    title: string;
+interface Props {
+    children: React.ReactNode;
+    title?: string;
 }
 
-const Page = ({children, title}: Props) => {
+const Page = ({title, children}: Props) => {
+
     useEffect(() => {
-        document.title = title;
+        let prefix = import.meta.env.VITE_APP_TITLE;
+        if (!prefix || prefix === "") {
+            prefix = "سامانه اجاره مسکن";
+        }
+
+        if (!title || title === "") {
+            document.title = prefix;
+            return;
+        }
+
+        document.title = `${prefix} ${title}`;
     }, [title]);
 
-    return <div>
-        {children}
-    </div>;
+    return children;
 }
 
 export default Page;
