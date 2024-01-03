@@ -19,11 +19,10 @@ class Estate(models.Model):
     longitude = models.FloatField()
     latitude = models.FloatField()
 
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_properties')
+    tenant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rented_properties', null=True, blank=True)
 
-class EstateUser(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    estate = models.ForeignKey(Estate, on_delete=models.CASCADE)
-    user_type = models.CharField(choices=ESTATE_USER_TYPES_CHOICES, max_length=25)
+    is_confirm = models.BooleanField(default=False)
 
 
 class EstateFile(models.Model):

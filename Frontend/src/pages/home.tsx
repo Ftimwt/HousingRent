@@ -9,18 +9,31 @@ const Home = () => {
     const [map, setMap] = useState<SDKMap | undefined>(undefined);
 
     useEffect(() => {
-        if (!map) return;
-        const marker = Marker({icon: 'apartment'});
+            if (!map) return;
+            const points = [
+                {loc: [55.00636827275082, 36.423850587385715], type: 'apartment'},
+                {
+                    loc: [55.00736827275082, 36.423860587385715], type: 'building'
+                }
+            ]
 
-        marker.setLngLat([55.00636827275082, 36.423850587385715]);
-        marker.addMap(map);
-    }, [map]);
+            for (const point of points) {
+                const marker = Marker({icon: point.type as any});
+                marker.setLngLat(point.loc as any);
+                marker.addMap(map);
+            }
+        }
+        ,
+        [map]
+    )
+    ;
 
     return <Page>
         <div className="flex flex-row gap-5 min-h-[500px]">
             <div className="w-full bg-white rounded shadow-1xl p-5">
                 <div className="relative w-full h-full overflow-hidden rounded">
                     <MapComponent
+                        onClick={console.log}
                         className="absolute top-0 left-o bottom-0 right-0 h-full w-full"
                         options={{
                             mapKey: import.meta.env.VITE_NESHAN_KEY,

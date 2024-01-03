@@ -3,6 +3,9 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Layout from "./layout";
 import Home from "./pages/home";
 import {ConfigProvider, ThemeConfig, theme} from "antd";
+import AuthWrapper from "@housing_rent/wrapper/auth";
+import {Provider} from "react-redux";
+import store from "@housing_rent/redux/store";
 
 const getTheme = (isDark?: boolean): ThemeConfig => ({
     token: {
@@ -18,16 +21,20 @@ const getTheme = (isDark?: boolean): ThemeConfig => ({
 
 function App() {
     return (
-        <ConfigProvider direction="rtl" theme={getTheme()}>
-            <BrowserRouter>
-                <Layout>
-                    <Routes>
-                        <Route path="/" element={<Home/>}>
-                        </Route>
-                    </Routes>
-                </Layout>
-            </BrowserRouter>
-        </ConfigProvider>
+        <Provider store={store}>
+            <ConfigProvider direction="rtl" theme={getTheme()}>
+                <BrowserRouter>
+                    <Layout>
+                        <AuthWrapper>
+                            <Routes>
+                                <Route path="/" element={<Home/>}>
+                                </Route>
+                            </Routes>
+                        </AuthWrapper>
+                    </Layout>
+                </BrowserRouter>
+            </ConfigProvider>
+        </Provider>
     );
 }
 

@@ -146,7 +146,8 @@ CSRF_COOKIE_HTTPONLY = False  # False since we will grab it via universal-cookie
 SESSION_COOKIE_HTTPONLY = True
 
 STATICFILES_DIRS = (
-    BASE_DIR.joinpath('Frontend', 'dist'),  # new
+    BASE_DIR.joinpath('Frontend', 'dist'),
+    BASE_DIR.joinpath('media'),
 )
 
 # Default primary key field type

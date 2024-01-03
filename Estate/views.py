@@ -1,31 +1,19 @@
 # views.py
 from django.db.models import F
 from django.db.models.functions import ACos, Cos, Radians, Sin
-from django.shortcuts import get_object_or_404
-from rest_framework import status
-from rest_framework import viewsets
+from rest_framework import status, generics, viewsets
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Estate, EstateUser
-from .serializers import EstateSerializer, EstateFileSerializer, EstateUserSerializer
+from .models import Estate
+from .serializers import CreateEstateSerializer, EstateFileSerializer, EstateUserSerializer
 
 
-class EstateUserViewSet(viewsets.ModelViewSet):
-    queryset = EstateUser.objects.all()
-    serializer_class = EstateSerializer  # Use the EstateSerializer for both Estate and EstateUser creation
+class EstateIndexViewSet(generics.ListCreateAPIView):
+    queryset = Estate.objects.order_by('-id').all()
+    serializer_class = CreateEstateSerializer  # Use the EstateSerializer for both Estate and EstateUser creation
     parser_classes = [MultiPartParser, FormParser]
-
-    def list(self, request, *args, **kwargs):
-        user = self.request.user
-        if not user.is_authenticated:
-            return Response({'detail': 'Authentication credentials were not provided.'},
-                            status=status.HTTP_403_FORBIDDEN)
-
-        estates = Estate.objects.filter(estateuser__user=user)
-        serializer = self.get_serializer(estates, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
         user = self.request.user
@@ -33,48 +21,35 @@ class EstateUserViewSet(viewsets.ModelViewSet):
             return Response({'detail': 'Authentication credentials were not provided.'},
                             status=status.HTTP_403_FORBIDDEN)
 
-        # Add user information to the request data
-        data = request.data.copy()
-        data['user'] = user.id
-        data['user_type'] = data.get('user_type', 'owner')  # Assuming a default user_type
-
-        # Create a serializer with data and files
+        data = request.data
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
-        estate_user = serializer.save()
+        estate_user = serializer.save(owner=user)
 
-        # Handle file uploads for EstateFiles
         files_data = request.FILES.getlist('files', [])
         for file_data in files_data:
             estate_file_data = {'estate': estate_user.id, 'file_type': data.get('file_type', 'photo'),
                                 'file': file_data}
+
             estate_file_serializer = EstateFileSerializer(data=estate_file_data)
             estate_file_serializer.is_valid(raise_exception=True)
             estate_file_serializer.save()
 
-        estate_user_data = {
-            'estate': estate_user.id,
-            'user_type': 'owner',
-            'user': user.id
-        }
-
-        user_serializer = EstateUserSerializer(data=estate_user_data)
-        user_serializer.is_valid(raise_exception=True)
-        user_serializer.save()
-
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    def retrieve(self, request, *args, **kwargs):
+    def get_queryset(self):
+        """
+        This view should return a list of all the purchases for
+        the user as determined by the username portion of the URL.
+        """
         user = self.request.user
-        if not user.is_authenticated:
-            return Response({'detail': 'Authentication credentials were not provided.'},
-                            status=status.HTTP_403_FORBIDDEN)
+        return Estate.objects.filter(owner=user).order_by('-id')
 
-        queryset = Estate.objects.filter(estateuser__user=user)
-        estate = get_object_or_404(queryset, pk=kwargs.get('pk'))
-        serializer = self.get_serializer(estate)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class EstateViewSet(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Estate.objects.all()
+    serializer_class = EstateUserSerializer
 
 
 class NearestEstatesAPIView(APIView):
@@ -103,6 +78,6 @@ class NearestEstatesAPIView(APIView):
         nearest_estates = nearest_estates.filter(distance__lte=max_distance)
 
         # Serialize the queryset using a DRF serializer
-        serializer = EstateSerializer(nearest_estates, many=True)
+        serializer = CreateEstateSerializer(nearest_estates, many=True)
 
         return Response({'estates': serializer.data, 'max_distance': max_distance})
