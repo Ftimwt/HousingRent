@@ -1,4 +1,5 @@
 import type {Config} from 'tailwindcss'
+
 const { resolveConfig } = require('tailwindcss');
 require('dotenv').config({ path: '.env.local' });
 

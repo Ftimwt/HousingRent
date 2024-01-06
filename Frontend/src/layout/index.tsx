@@ -1,5 +1,5 @@
 import React from "react";
-import {Layout as AntLayout, Menu, Space} from 'antd';
+import {Layout as AntLayout, Space} from 'antd';
 import Header from "./header";
 
 interface Props {

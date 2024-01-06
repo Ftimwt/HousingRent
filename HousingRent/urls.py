@@ -1,20 +1,10 @@
 from django.contrib import admin
 from django.shortcuts import render
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView, TokenVerifyView,
 )
-
-from Estate.views import EstateIndexViewSet, NearestEstatesAPIView
-from User.views.auth import AuthViewSet
-from User.views.user import UserViewSet
-
-router = DefaultRouter()
-router.register(r'auth', AuthViewSet, basename='auth')
-router.register(r'auth', UserViewSet, basename='auth')
-router.register(r'users/estates', EstateIndexViewSet.as_view(), basename='estates')
 
 
 def index_view(request):
@@ -24,9 +14,14 @@ def index_view(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index_view, name='index'),
-    path('v1/rooms/', include('User.urls')),
 
-    path('api/estates/nearest', NearestEstatesAPIView.as_view()),
+    # User module
+    path('api/v1/auth/', include('User.urls')),
+
+    # Estate module
+    path('api/v1/estates/', include('Estate.urls.system')),
+    path('api/v1/users/estates', include('Estate.urls.user')),
+    path('api/v1/admin/estates', include('Estate.urls.admin')),
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

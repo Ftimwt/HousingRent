@@ -4,8 +4,6 @@
 // import {jwtDecode} from 'jwt-decode'
 // import axios from "axios";
 
-import type {RootState} from '@housing_rent/redux/store'
-
 
 export const prepareHeadersDefault = (headers: Headers) => {
     headers.set('Accept', 'application/json');

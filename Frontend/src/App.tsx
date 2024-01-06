@@ -2,7 +2,7 @@ import './styles/global.scss';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Layout from "./layout";
 import Home from "./pages/home";
-import {ConfigProvider, ThemeConfig, theme} from "antd";
+import {ConfigProvider, theme, ThemeConfig} from "antd";
 import AuthWrapper from "@housing_rent/wrapper/auth";
 import {Provider} from "react-redux";
 import store from "@housing_rent/redux/store";

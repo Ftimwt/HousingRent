@@ -1,5 +1,5 @@
-from django.contrib import admin
 from django.apps import apps
+from django.contrib import admin
 
 post_models = apps.get_app_config('User').get_models()
 
