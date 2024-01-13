@@ -75,9 +75,18 @@ class EstateFileSerializer(serializers.ModelSerializer):
 
 
 class EstateOwnerRequestSerializer(serializers.ModelSerializer):
+    estate = serializers.SerializerMethodField()
+    user = serializers.SerializerMethodField()
+
     class Meta:
         model = EstateRequest
         fields = ['id', 'estate', 'user']
+
+    def get_estate(self, req):
+        return EstateUserSerializer(req.estate).data
+
+    def get_user(self, req):
+        return UserSerializer(req.user).data
 
 
 class EstateTenantRequestSerializer(serializers.ModelSerializer):

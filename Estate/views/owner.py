@@ -1,11 +1,11 @@
-from rest_framework import status, generics
+from rest_framework import status, generics, views
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from Estate.decorator.estate import is_estate_owner
-from Estate.models import Estate
-from Estate.serializers import CreateEstateSerializer, EstateFileSerializer
+from Estate.models import Estate, EstateRequest
+from Estate.serializers import CreateEstateSerializer, EstateFileSerializer, EstateOwnerRequestSerializer
 
 
 class EstateIndexViewSet(generics.ListCreateAPIView):
@@ -93,3 +93,64 @@ class EstateFilesDeleteViewSet(generics.DestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+class EstateRequestsList(generics.ListAPIView):
+    queryset = EstateRequest
+    serializer_class = EstateOwnerRequestSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return EstateRequest.objects.filter(estate__owner=user).order_by('-id')
+
+
+class EstateRequestsControl(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, *args, **kwargs):
+        return self._handle_accept(**kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self._handle_cancel(**kwargs)
+
+    def _handle_change_accept(self, accept, **kwargs):
+        req_id = kwargs.get('req_id')
+        user = self.request.user
+        req = EstateRequest.objects.filter(id=req_id).first()
+
+        if req is None:
+            return Response({
+                "details": "درخواست یافت نشد برای تایید."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        if req.estate.owner_id != user.id:
+            return Response({
+                "details": "شما به این درخواست دسترسی ندارید."
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        # make the request accepted
+        req.accepted = accept
+        req.save()
+
+        return req
+
+    def _handle_cancel(self, **kwargs):
+        self._handle_change_accept(False, **kwargs)
+
+        return Response({
+            "details": "درخواست اجاره ملک شما برای این کاربر رد شد."
+        }, status=status.HTTP_200_OK)
+
+    def _handle_accept(self, **kwargs):
+        req = self._handle_change_accept(True, **kwargs)
+
+        if type(req) is Response:
+            return req
+
+        # change tenant of estate
+        req.estate.tenant = self.request.user
+        req.estate.save()
+
+        return Response({
+            "details": "درخواست اجاره ملک شما برای این کاربر تایید شد."
+        }, status=status.HTTP_200_OK)
