@@ -118,6 +118,9 @@ class EstateRequestsControl(views.APIView):
         user = self.request.user
         req = EstateRequest.objects.filter(id=req_id).first()
 
+        if req.accepted is not None:
+            return Response({'details': "این درخواست قبلا پاسخ داده شده است."}, status=status.HTTP_400_BAD_REQUEST)
+
         if req is None:
             return Response({
                 "details": "درخواست یافت نشد برای تایید."
@@ -135,7 +138,10 @@ class EstateRequestsControl(views.APIView):
         return req
 
     def _handle_cancel(self, **kwargs):
-        self._handle_change_accept(False, **kwargs)
+        req = self._handle_change_accept(False, **kwargs)
+
+        if type(req) is Response:
+            return req
 
         return Response({
             "details": "درخواست اجاره ملک شما برای این کاربر رد شد."
