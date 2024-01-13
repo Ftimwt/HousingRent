@@ -38,6 +38,7 @@ class CreateEstateSerializer(serializers.ModelSerializer):
 
 class EstateUserSerializer(serializers.ModelSerializer):
     files = serializers.SerializerMethodField()
+    owner = serializers.SerializerMethodField()
 
     class Meta:
         model = Estate
@@ -59,6 +60,9 @@ class EstateUserSerializer(serializers.ModelSerializer):
     def get_files(self, estate):
         photo_files = estate.files.filter(file_type='photo')
         return EstateFileSerializer(photo_files, many=True).data
+
+    def get_owner(self, estate):
+        return UserSerializer(estate.owner).data
 
 
 class EstateFileSerializer(serializers.ModelSerializer):
