@@ -2,7 +2,7 @@
 from rest_framework import serializers
 
 from User.serializers import UserSerializer
-from .models import Estate, EstateFile
+from .models import Estate, EstateFile, EstateRequest
 
 
 class CreateEstateSerializer(serializers.ModelSerializer):
@@ -72,3 +72,20 @@ class EstateFileSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         photo_url = car.file.url
         return photo_url
+
+
+class EstateOwnerRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EstateRequest
+        fields = ['id', 'estate', 'user']
+
+
+class EstateTenantRequestSerializer(serializers.ModelSerializer):
+    estate = serializers.SerializerMethodField()
+
+    class Meta:
+        model = EstateRequest
+        fields = ['id', 'estate', 'created_time', 'updated_time']
+
+    def get_estate(self, req):
+        return EstateUserSerializer(req.estate).data

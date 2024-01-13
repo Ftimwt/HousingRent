@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from User.models import User
+from User.models.user import User
 
 ESTATE_TYPES_CHOICES = (("office", "اداری"), ("residential", "مسکونی"))
 ESTATE_USER_TYPES_CHOICES = (
@@ -39,3 +39,12 @@ class EstateFile(models.Model):
 
     def __str__(self):
         return f"{self.file_type} - {self.file.name}"
+
+
+class EstateRequest(models.Model):
+    estate = models.ForeignKey(Estate, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    accepted = models.BooleanField(null=True)
+
+    created_time = models.DateTimeField(auto_now_add=True)
+    updated_time = models.DateTimeField(auto_now=True)

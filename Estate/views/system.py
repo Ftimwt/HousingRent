@@ -28,7 +28,8 @@ class NearestEstatesAPIView(views.APIView):
                                )
 
         # Query for fetching the nearest estates
-        nearest_estates = Estate.objects.annotate(distance=distance_expression).order_by('distance')
+        nearest_estates = (Estate.objects.filter(is_confirm=True).annotate(distance=distance_expression)
+                           .order_by('distance'))
 
         # Filter by the dynamic max_distance
         nearest_estates = nearest_estates.filter(distance__lte=max_distance)

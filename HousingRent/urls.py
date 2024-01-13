@@ -20,8 +20,9 @@ urlpatterns = [
 
     # Estate module
     path('api/v1/estates/', include('Estate.urls.system')),
-    path('api/v1/users/estates', include('Estate.urls.user')),
+    path('api/v1/owner/estates', include('Estate.urls.owner')),
     path('api/v1/admin/estates', include('Estate.urls.admin')),
+    path('api/v1/tenant/estates', include('Estate.urls.tenant')),
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
