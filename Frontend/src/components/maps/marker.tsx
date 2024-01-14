@@ -16,9 +16,10 @@ const icons = {
 
 interface Option {
     icon: keyof typeof icons;
+    draggable?: boolean;
 }
 
-const Marker = ({icon}: Option) => {
+const Marker = ({icon, draggable}: Option) => {
     const el = document.createElement('div');
     el.className = 'marker';
 
@@ -33,15 +34,22 @@ const Marker = ({icon}: Option) => {
 
     const marker = new nmp_mapboxgl.Marker(el);
 
+    if (draggable)
+        marker.setDraggable(draggable);
+
     const addMap = (map: SDKMap) => {
         marker.addTo(map as any)
+    }
+
+    const remove = () => {
+        marker.remove();
     }
 
     const setLngLat = (latlng: [number, number]) => {
         marker.setLngLat(latlng);
     }
 
-    return {addMap, setLngLat}
+    return {addMap, setLngLat, remove}
 }
 
 export default Marker;
