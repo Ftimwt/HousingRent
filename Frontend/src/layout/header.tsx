@@ -12,7 +12,7 @@ const items = [
 ];
 
 const Header = () => {
-    return <Layout.Header>
+    return <Layout.Header className="!bg-white">
         <Menu
             items={items}
             mode="horizontal"

@@ -5,7 +5,7 @@ interface Props {
 }
 
 const EstateGrid = ({estates}: Props) => {
-    return <div className="grid gap-5 grid-cols-3 justify-items-stretch">
+    return <div className="flex flex-row w-full overflow-auto max-h-[500px]  flex-wrap gap-5">
         {estates.map((estate, key) => (
             <EstateItem
                 key={`estate-${estate.id}-${key}`}

@@ -19,7 +19,7 @@ const EstateItemCover = ({estate}: Props) => {
 }
 
 const EstateItem = ({estate}: Props) => {
-    return <Card className="shadow min-w-[350px]" size="small"
+    return <Card className="shadow w-full min-w-[350px] max-w-[320px]" size="small"
                  cover={<EstateItemCover estate={estate}/>}
     >
         <div className="flex flex-col gap-2">

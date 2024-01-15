@@ -3,11 +3,11 @@ import SDKMap from "@neshan-maps-platform/mapbox-gl/dist/src/core/Map";
 import {useEffect, useState} from "react";
 import Marker from "../components/maps/marker";
 import Page from "./page";
-import {Card, Descriptions, Empty, Pagination} from "antd";
+import {Empty, Slider, Typography} from "antd";
 import {useNearestEstateQuery} from "@housing_rent/redux/requests/estates";
-import EstateItem from "@housing_rent/components/estates/item";
 import EstateGrid from "@housing_rent/components/estates/grid";
 import Loading from "@housing_rent/components/loading/loading";
+import KmSlider from "@housing_rent/components/slider/km";
 
 interface MapPoint {
     loc: [number, number];
@@ -17,7 +17,7 @@ interface MapPoint {
 const Home = () => {
     const [map, setMap] = useState<SDKMap | undefined>(undefined);
 
-    const [maxDistance, setDistance] = useState<number>(0.5);
+    const [maxDistance, setDistance] = useState<number>(0.8);
     const [latitude, setLatitude] = useState<number>(36.423850587385715);
     const [longitude, setLongitude] = useState<number>(55.00636827275082);
     const [marker, setMarker] = useState<any>();
@@ -62,28 +62,33 @@ const Home = () => {
         if (!map) return;
 
         (map as any).on('click', function (x: any) {
+            console.log(typeof (x));
             setLatitude(x.lngLat.lat);
             setLongitude(x.lngLat.lng);
         })
     }, [map]);
 
+    useEffect(() => {
+        console.table({latitude, longitude});
+    }, [latitude, longitude]);
 
-    var createGeoJSONCircle = function (center: any, radiusInKm: any, points?: any) {
+
+    const createGeoJSONCircle = function (center: any, radiusInKm: any, points?: any) {
         if (!points) points = 64;
 
-        var coords = {
+        const coords = {
             latitude: center[1],
             longitude: center[0]
         };
 
-        var km = radiusInKm;
+        const km = radiusInKm;
 
-        var ret = [];
-        var distanceX = km / (111.320 * Math.cos(coords.latitude * Math.PI / 180));
-        var distanceY = km / 110.574;
+        const ret = [];
+        const distanceX = km / (111.320 * Math.cos(coords.latitude * Math.PI / 180));
+        const distanceY = km / 110.574;
 
-        var theta, x, y;
-        for (var i = 0; i < points; i++) {
+        let theta, x, y;
+        for (let i = 0; i < points; i++) {
             theta = (i / points) * (2 * Math.PI);
             x = distanceX * Math.cos(theta);
             y = distanceY * Math.sin(theta);
@@ -132,14 +137,15 @@ const Home = () => {
         }
     }, [longitude, latitude, maxDistance, map])
 
+    let mapKey = import.meta.env.VITE_NESHAN_KEY;
     return <Page>
-        <div className="flex flex-row gap-5 min-h-[500px]">
+        <div className="flex flex-col gap-5 min-h-[500px] md:flex-col sm:flex-col lg:flex-row">
             <div className="w-full bg-white rounded shadow-1xl p-5">
-                <div className="relative w-full h-full overflow-hidden rounded">
+                <div className="relative w-full h-full overflow-hidden rounded min-h-[500px]">
                     <MapComponent
                         className="absolute top-0 left-o bottom-0 right-0 h-full w-full"
                         options={{
-                            mapKey: import.meta.env.VITE_NESHAN_KEY,
+                            mapKey: mapKey,
                             center: [55.00636827275082, 36.423850587385715],
                             zoom: 15,
                         }}
@@ -151,12 +157,17 @@ const Home = () => {
                 </div>
             </div>
 
-            <div className="w-full bg-white rounded shadow-1x p-5 flex flex-col gap-5">
+            <div className="w-full bg-white max-h-[600px] rounded shadow-1x p-5 flex flex-col gap-5">
+                <div className="grid grid-cols-2">
+                    <div className="w-full">
+                        <h4>محدوده (کیلومتر)</h4>
+                        <KmSlider onChange={setDistance} value={maxDistance}/>
+                    </div>
+                </div>
                 <Loading loading={loading}>
                     {nearestHomeResponse?.estates.length ?
                         <>
                             <EstateGrid estates={nearestHomeResponse.estates}/>
-                            <Pagination/>
                         </>
                         :
                         <div className="flex items-center m-auto">

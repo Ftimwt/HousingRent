@@ -1,7 +1,7 @@
 import type {Config} from 'tailwindcss'
 
 const { resolveConfig } = require('tailwindcss');
-require('dotenv').config({ path: '.env.local' });
+require('dotenv').config({ path: '.env.local.local' });
 
 const config: Config = {
     content: [

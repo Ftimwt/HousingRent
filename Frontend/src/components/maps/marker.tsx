@@ -17,7 +17,7 @@ const icons = {
 export interface MarkerOption {
     icon: keyof typeof icons;
     draggable?: boolean;
-    latlng: [number, number];
+    latlng?: [number, number];
 }
 
 export interface MarkerMethod {

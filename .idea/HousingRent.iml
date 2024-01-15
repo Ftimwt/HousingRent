@@ -16,7 +16,7 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.env" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.10 (HousingRent)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.11 (HousingRent)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="ts-external-references" level="project" />
   </component>
