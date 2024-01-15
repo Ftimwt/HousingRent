@@ -1,39 +1,142 @@
 import {MapComponent} from "@neshan-maps-platform/mapbox-gl-react";
 import SDKMap from "@neshan-maps-platform/mapbox-gl/dist/src/core/Map";
 import {useEffect, useState} from "react";
-import Marker from "../components/marker";
+import Marker from "../components/maps/marker";
 import Page from "./page";
-import {Card, Pagination} from "antd";
+import {Card, Descriptions, Empty, Pagination} from "antd";
+import {useNearestEstateQuery} from "@housing_rent/redux/requests/estates";
+import EstateItem from "@housing_rent/components/estates/item";
+import EstateGrid from "@housing_rent/components/estates/grid";
+import Loading from "@housing_rent/components/loading/loading";
+
+interface MapPoint {
+    loc: [number, number];
+    type: string;
+}
 
 const Home = () => {
     const [map, setMap] = useState<SDKMap | undefined>(undefined);
 
-    useEffect(() => {
-            if (!map) return;
-            const points = [
-                {loc: [55.00636827275082, 36.423850587385715], type: 'apartment'},
-                {
-                    loc: [55.00736827275082, 36.423860587385715], type: 'building'
-                }
-            ]
+    const [maxDistance, setDistance] = useState<number>(0.5);
+    const [latitude, setLatitude] = useState<number>(36.423850587385715);
+    const [longitude, setLongitude] = useState<number>(55.00636827275082);
+    const [marker, setMarker] = useState<any>();
 
-            for (const point of points) {
+
+    const {data: nearestHomeResponse, isFetching: nearestLoading} = useNearestEstateQuery({
+        latitude: latitude,
+        longitude: longitude,
+        max_distance: maxDistance
+    });
+
+    const loading = nearestLoading;
+
+    useEffect(() => {
+            if (!nearestHomeResponse || !map) return () => {
+            };
+            const {estates} = nearestHomeResponse;
+            const points: MapPoint[] = estates.map(estate => ({
+                loc: [estate.longitude, estate.latitude],
+                type: 'building'
+            }));
+            const result = points.map(point => {
                 const marker = Marker({icon: point.type as any});
-                marker.setLngLat(point.loc as any);
+                marker.setLngLat(point.loc);
                 marker.addMap(map);
-            }
-        }
-        ,
-        [map]
+                return marker;
+            });
+            return () => {
+                for (const marker of result) {
+                    marker.remove();
+                }
+            };
+        }, [nearestHomeResponse, map]
     )
     ;
+
+    useEffect(() => {
+        marker?.setLngLat([longitude, latitude])
+    }, [latitude, longitude]);
+
+    useEffect(() => {
+        if (!map) return;
+
+        (map as any).on('click', function (x: any) {
+            setLatitude(x.lngLat.lat);
+            setLongitude(x.lngLat.lng);
+        })
+    }, [map]);
+
+
+    var createGeoJSONCircle = function (center: any, radiusInKm: any, points?: any) {
+        if (!points) points = 64;
+
+        var coords = {
+            latitude: center[1],
+            longitude: center[0]
+        };
+
+        var km = radiusInKm;
+
+        var ret = [];
+        var distanceX = km / (111.320 * Math.cos(coords.latitude * Math.PI / 180));
+        var distanceY = km / 110.574;
+
+        var theta, x, y;
+        for (var i = 0; i < points; i++) {
+            theta = (i / points) * (2 * Math.PI);
+            x = distanceX * Math.cos(theta);
+            y = distanceY * Math.sin(theta);
+
+            ret.push([coords.longitude + x, coords.latitude + y]);
+        }
+        ret.push(ret[0]);
+
+        return {
+            "type": "geojson",
+            "data": {
+                "type": "FeatureCollection",
+                "features": [{
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [ret]
+                    }
+                }]
+            }
+        };
+    };
+
+    useEffect(() => {
+        if (!map) return () => {
+        };
+        let source = createGeoJSONCircle([longitude, latitude], maxDistance);
+        (map as any).addSource("polygon", source);
+
+        const layer: any = {
+            "id": "polygon",
+            "type": "fill",
+            "source": "polygon",
+            "layout": {},
+            "paint": {
+                "fill-color": "blue",
+                "fill-opacity": 0.3
+            }
+        };
+
+        (map as any).addLayer(layer);
+
+        return () => {
+            map.removeLayer("polygon")
+            map.removeSource("polygon")
+        }
+    }, [longitude, latitude, maxDistance, map])
 
     return <Page>
         <div className="flex flex-row gap-5 min-h-[500px]">
             <div className="w-full bg-white rounded shadow-1xl p-5">
                 <div className="relative w-full h-full overflow-hidden rounded">
                     <MapComponent
-                        onClick={console.log}
                         className="absolute top-0 left-o bottom-0 right-0 h-full w-full"
                         options={{
                             mapKey: import.meta.env.VITE_NESHAN_KEY,
@@ -49,17 +152,20 @@ const Home = () => {
             </div>
 
             <div className="w-full bg-white rounded shadow-1x p-5 flex flex-col gap-5">
-                <div className="grid gap-5 grid-cols-3 justify-items-stretch">
-                    {new Array(10).fill({}).map(() => (
-                        <Card className="shadow" size="small" title="Small size card" extra={<a href="#">More</a>}>
-                            <p>Card content</p>
-                            <p>Card content</p>
-                            <p>Card content</p>
-                        </Card>
-                    ))
+                <Loading loading={loading}>
+                    {nearestHomeResponse?.estates.length ?
+                        <>
+                            <EstateGrid estates={nearestHomeResponse.estates}/>
+                            <Pagination/>
+                        </>
+                        :
+                        <div className="flex items-center m-auto">
+                            <Empty
+                                description="مسکنی در ۲ کیلومتری مکانی که شما انتخاب کرده اید یافت نشد."
+                            />
+                        </div>
                     }
-                </div>
-                <Pagination/>
+                </Loading>
             </div>
         </div>
 

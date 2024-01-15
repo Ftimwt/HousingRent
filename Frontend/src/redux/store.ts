@@ -1,13 +1,16 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {AuthApi} from "@housing_rent/redux/requests/auth";
+import {EstateApi} from "@housing_rent/redux/requests/estates";
 
 const store = configureStore({
     reducer: {
-        [AuthApi.reducerPath]: AuthApi.reducer
+        [AuthApi.reducerPath]: AuthApi.reducer,
+        [EstateApi.reducerPath]: EstateApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware()
             .concat(AuthApi.middleware)
+            .concat(EstateApi.middleware)
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

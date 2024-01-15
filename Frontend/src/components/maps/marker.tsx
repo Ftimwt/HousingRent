@@ -14,12 +14,19 @@ const icons = {
     skyscrapers: "skyscrapers-64.png",
 }
 
-interface Option {
+export interface MarkerOption {
     icon: keyof typeof icons;
     draggable?: boolean;
+    latlng: [number, number];
 }
 
-const Marker = ({icon, draggable}: Option) => {
+export interface MarkerMethod {
+    addMap: (map: SDKMap) => void;
+    setLngLat: (point: [number, number]) => void;
+    remove: () => void;
+}
+
+const Marker = ({icon, draggable}: MarkerOption): MarkerMethod => {
     const el = document.createElement('div');
     el.className = 'marker';
 
@@ -49,7 +56,7 @@ const Marker = ({icon, draggable}: Option) => {
         marker.setLngLat(latlng);
     }
 
-    return {addMap, setLngLat, remove}
+    return {addMap, remove, setLngLat}
 }
 
 export default Marker;
