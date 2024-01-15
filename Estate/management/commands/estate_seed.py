@@ -25,7 +25,7 @@ class Command(BaseCommand):
             estate.longitude = round(rnd.uniform(54.9312, 54.9947), 5)
             estate.latitude = round(rnd.uniform(36.3963, 36.4373), 5)
 
-            estate.rental_price = rnd.randint(int(math.pow(10, 6)) * 40, int(math.pow(10, 7)))
+            estate.rental_price = rnd.randint(int(math.pow(10, 6)) + 40, int(math.pow(10, 7)))
             estate.mortgage_price = estate.rental_price * rnd.randint(3, 10)
             estate.size_of_house = estate.rental_price / math.pow(10, 6)
 

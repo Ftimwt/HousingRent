@@ -28,7 +28,6 @@ export default function useToken() {
         const refresh = TokenService.getLocalRefreshToken()
 
         dispatch(updateToken({accessToken: access, refreshToken: refresh}));
-        console.table({access, refresh});
     }, []);
 
     return {refreshToken, accessToken, update, refresh};

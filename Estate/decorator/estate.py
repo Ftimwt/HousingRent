@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from Estate.models import Estate
 
 
+# بررسی اینکه کاربر درخواست کننده مالک ملک درخواستی هست یا نه
 def is_estate_owner(f):
     def wrapper(self, request, *args, **kwargs):
         estate_id = kwargs['pk']
@@ -21,6 +22,7 @@ def is_estate_owner(f):
     return wrapper
 
 
+# بررسی وجود داشتن ملک
 def is_estate_exists(callback):
     def wrapper(self, request, *args, **kwargs):
         estate_id = kwargs['estate_id']

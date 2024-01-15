@@ -11,6 +11,7 @@ from Estate.serializers import CreateEstateSerializer, EstateFileSerializer, Est
 class EstateIndexViewSet(generics.ListCreateAPIView):
     queryset = Estate.objects.order_by('-id').all()
     serializer_class = CreateEstateSerializer  # Use the EstateSerializer for both Estate and EstateUser creation
+    # for uploading files
     parser_classes = [MultiPartParser, FormParser]
 
     permission_classes = [IsAuthenticated]

@@ -43,7 +43,8 @@ export const prepareHeaders = async (headers: Headers, {getState}: { getState: a
         TokenService.setLocalAccessToken(accessToken);
     }
 
-    headers.set('Authorization', 'Bearer ' + accessToken);
+    if (accessToken)
+        headers.set('Authorization', 'Bearer ' + accessToken);
     return headers;
 };
 

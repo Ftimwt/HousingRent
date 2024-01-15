@@ -15,7 +15,10 @@ export const userSlice = createSlice({
         setUser: (state, action: PayloadAction<UserModel>) => {
             state.user = action.payload;
         },
+        resetUser: (state) => {
+            state.user = undefined;
+        }
     }
 })
 
-export const {setUser} = userSlice.actions;
+export const {setUser, resetUser} = userSlice.actions;

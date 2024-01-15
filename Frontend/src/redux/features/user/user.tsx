@@ -2,7 +2,7 @@ import {useAppDispatch, useAppSelector} from "@housing_rent/redux/hooks";
 import {useCallback, useEffect} from "react";
 import {useLazyWhoamiQuery, useLoginMutation} from "@housing_rent/redux/requests/auth";
 import useToken from "@housing_rent/redux/features/token/token";
-import {setUser} from "@housing_rent/redux/features/user/userSlice";
+import {resetUser, setUser} from "@housing_rent/redux/features/user/userSlice";
 
 export default function useUser() {
     const {user} = useAppSelector((state) => state.user);
@@ -21,6 +21,11 @@ export default function useUser() {
         return loginReq(data);
     }, []);
 
+    const logout = useCallback(() => {
+        updateToken({refreshToken: undefined, accessToken: undefined});
+        dispatch(resetUser());
+    }, []);
+
     useEffect(() => {
         if (!loginResponse) return;
         updateToken({
@@ -30,7 +35,6 @@ export default function useUser() {
     }, [loginResponse]);
 
     useEffect(() => {
-        console.log(accessToken);
         whoami();
     }, [accessToken, refreshToken])
 
@@ -41,5 +45,5 @@ export default function useUser() {
 
     const loading = loadingLogin || whoamiLoading;
 
-    return {login, loading, user, loginError};
+    return {login, loading, user, loginError, logout};
 }

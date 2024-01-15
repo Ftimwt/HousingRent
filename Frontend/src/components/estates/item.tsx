@@ -3,7 +3,7 @@ import {useMemo} from "react";
 
 interface Props {
     estate: EstateModel;
-}
+EstateModel}
 
 const EstateItemCover = ({estate}: Props) => {
     const photo = import.meta.env.VITE_PREFIX_MEDIA + estate.files[0].photo_url;

@@ -53,7 +53,7 @@ const Marker = ({icon, draggable}: MarkerOption): MarkerMethod => {
     }
 
     const setLngLat = (latlng: [number, number]) => {
-        marker.setLngLat(latlng);
+        marker.setLngLat({lng: latlng[0], lat: latlng[1]});
     }
 
     return {addMap, remove, setLngLat}

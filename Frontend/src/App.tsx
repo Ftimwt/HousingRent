@@ -7,6 +7,7 @@ import {StyleProvider} from '@ant-design/cssinjs';
 import AuthWrapper from "@housing_rent/wrapper/auth";
 import {Provider} from "react-redux";
 import store from "@housing_rent/redux/store";
+import TestPage from "@housing_rent/pages/test";
 
 const getTheme = (isDark?: boolean): ThemeConfig => ({
     token: {
@@ -32,6 +33,7 @@ function App() {
                                     <Routes>
                                         <Route path="/" element={<Home/>}>
                                         </Route>
+                                        <Route path="/test" element={<TestPage/>}></Route>
                                     </Routes>
                                 </AuthWrapper>
                             </Layout>

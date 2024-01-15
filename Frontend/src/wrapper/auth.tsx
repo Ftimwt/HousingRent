@@ -13,8 +13,6 @@ const AuthWrapper = ({children}: Props) => {
     // handle change UserModel
     useEffect(() => {
         if (!data) return;
-        console.log(data);
-        alert(data.first_name);
     }, [data]);
 
 
