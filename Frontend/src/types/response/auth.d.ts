@@ -1,11 +1,12 @@
 interface AuthResponseI {
+    detail: string;
     token: {
         access: string;
         refresh: string;
     }
 }
 
-interface AuthRequestI {
+interface LoginRequestI {
     username: string;
     password: string;
 }

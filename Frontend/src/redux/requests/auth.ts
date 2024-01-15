@@ -4,14 +4,14 @@ import {getApiUrl, prepareHeaders} from "@housing_rent/redux/requests/index";
 export const AuthApi = createApi({
     reducerPath: 'users',
     baseQuery: fetchBaseQuery({
-        baseUrl: getApiUrl('/auth'),
+        baseUrl: getApiUrl('/v1/auth'),
         prepareHeaders: prepareHeaders,
     }),
     tagTypes: ['auth'],
     endpoints: (builder) => ({
-        login: builder.mutation<AuthResponseI, AuthRequestI>({
+        login: builder.mutation<AuthResponseI, LoginRequestI>({
             query: (body) => ({
-                url: '/login',
+                url: '/login/',
                 body,
                 method: 'post',
             }),
@@ -28,4 +28,5 @@ export const AuthApi = createApi({
 export const {
     useLoginMutation,
     useWhoamiQuery,
+    useLazyWhoamiQuery
 } = AuthApi;

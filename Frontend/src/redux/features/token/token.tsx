@@ -23,5 +23,13 @@ export default function useToken() {
         });
     }
 
+    useEffect(() => {
+        const access = TokenService.getLocalAccessToken()
+        const refresh = TokenService.getLocalRefreshToken()
+
+        dispatch(updateToken({accessToken: access, refreshToken: refresh}));
+        console.table({access, refresh});
+    }, []);
+
     return {refreshToken, accessToken, update, refresh};
 }

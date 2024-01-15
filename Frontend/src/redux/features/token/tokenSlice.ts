@@ -16,8 +16,13 @@ export const tokenSlice = createSlice({
     initialState,
     reducers: {
         updateToken: (state, action: PayloadAction<TokenState>) => {
-            state.accessToken = action.payload.accessToken
-            state.refreshToken = action.payload.refreshToken
+            state.accessToken = action.payload.accessToken;
+            state.refreshToken = action.payload.refreshToken;
+            if (action.payload.accessToken)
+                TokenService.setLocalAccessToken(action.payload.accessToken);
+
+            if (action.payload.refreshToken)
+                TokenService.setLocalRefreshToken(action.payload.refreshToken);
         },
         updateAccessToken: (state, action: PayloadAction<string>) => {
             state.accessToken = action.payload;

@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/cssinjs": "^1.18.2",
     "@neshan-maps-platform/mapbox-gl": "^1.1.1",
     "@neshan-maps-platform/mapbox-gl-react": "^1.0.0",
     "@reduxjs/toolkit": "^2.0.1",
@@ -17,6 +18,7 @@
     "antd": "^5.12.4",
     "axios": "^1.6.3",
     "dotenv": "^16.3.1",
+    "iconsax-react": "^0.0.8",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "localforage": "^1.10.0",

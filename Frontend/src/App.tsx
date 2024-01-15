@@ -2,7 +2,8 @@ import './styles/global.scss';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Layout from "./layout";
 import Home from "./pages/home";
-import {ConfigProvider, theme, ThemeConfig} from "antd";
+import {ConfigProvider, theme, ThemeConfig, App as AntApp} from "antd";
+import {StyleProvider} from '@ant-design/cssinjs';
 import AuthWrapper from "@housing_rent/wrapper/auth";
 import {Provider} from "react-redux";
 import store from "@housing_rent/redux/store";
@@ -22,18 +23,22 @@ const getTheme = (isDark?: boolean): ThemeConfig => ({
 function App() {
     return (
         <Provider store={store}>
-            <ConfigProvider direction="rtl" theme={getTheme()}>
-                <BrowserRouter>
-                    <Layout>
-                        <AuthWrapper>
-                            <Routes>
-                                <Route path="/" element={<Home/>}>
-                                </Route>
-                            </Routes>
-                        </AuthWrapper>
-                    </Layout>
-                </BrowserRouter>
-            </ConfigProvider>
+            <AntApp>
+                <ConfigProvider direction="rtl" theme={getTheme()}>
+                    <StyleProvider hashPriority="high">
+                        <BrowserRouter>
+                            <Layout>
+                                <AuthWrapper>
+                                    <Routes>
+                                        <Route path="/" element={<Home/>}>
+                                        </Route>
+                                    </Routes>
+                                </AuthWrapper>
+                            </Layout>
+                        </BrowserRouter>
+                    </StyleProvider>
+                </ConfigProvider>
+            </AntApp>
         </Provider>
     );
 }

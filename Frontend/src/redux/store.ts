@@ -1,9 +1,13 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {AuthApi} from "@housing_rent/redux/requests/auth";
 import {EstateApi} from "@housing_rent/redux/requests/estates";
+import {tokenSlice} from "@housing_rent/redux/features/token/tokenSlice";
+import {userSlice} from "@housing_rent/redux/features/user/userSlice";
 
 const store = configureStore({
     reducer: {
+        token: tokenSlice.reducer,
+        user: userSlice.reducer,
         [AuthApi.reducerPath]: AuthApi.reducer,
         [EstateApi.reducerPath]: EstateApi.reducer,
     },
