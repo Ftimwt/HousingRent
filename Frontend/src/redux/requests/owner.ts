@@ -1,46 +1,42 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import {getApiUrl, prepareHeaders} from "@housing_rent/redux/requests/index";
 
-export const TenantApi = createApi({
-    reducerPath: 'tenant',
+export const OwnerApi = createApi({
+    reducerPath: 'owner',
     baseQuery: fetchBaseQuery({
-        baseUrl: getApiUrl('/v1/tenant/'),
+        baseUrl: getApiUrl('/v1/owner/'),
         prepareHeaders: prepareHeaders,
     }),
-    tagTypes: ['tenant'],
+    tagTypes: ['owner'],
     endpoints: (builder) => ({
-        sendRentRequest: builder.mutation<BaseResponse, number>({
-            query: (id) => ({
-                url: `estates/rent/${id}/request`,
-                method: 'put',
+        myEstates: builder.query<EstateModel[], void>({
+            query: () => ({
+                url: `estates`,
             }),
-            invalidatesTags: ['tenant']
+            providesTags: ['owner']
         }),
         removeRentRequest: builder.mutation<BaseResponse, number>({
             query: (id) => ({
                 url: `estates/rent/${id}/request`,
                 method: 'delete',
             }),
-            invalidatesTags: ['tenant']
+            invalidatesTags: ['owner']
         }),
         requests: builder.query<SendRentListResponseI, void>({
             query: () => ({
                 url: 'estates/rent/requests',
             }),
-            providesTags: ['tenant']
+            providesTags: ['owner']
         }),
         rentedHouses: builder.query<EstateModel[], void>({
             query: () => ({
                 url: 'estates'
             }),
-            providesTags: ['tenant']
+            providesTags: ['owner']
         })
     })
 });
 
 export const {
-    useSendRentRequestMutation,
-    useRequestsQuery,
-    useRemoveRentRequestMutation,
-    useRentedHousesQuery
-} = TenantApi;
+    useMyEstatesQuery
+} = OwnerApi;

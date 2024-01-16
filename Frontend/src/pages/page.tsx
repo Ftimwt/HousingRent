@@ -3,9 +3,10 @@ import React, {useEffect} from "react";
 interface Props {
     children: React.ReactNode;
     title?: string;
+    className?: string;
 }
 
-const Page = ({title, children}: Props) => {
+const Page = ({title, children, className}: Props) => {
 
     useEffect(() => {
         let prefix = import.meta.env.VITE_APP_TITLE;
@@ -20,6 +21,12 @@ const Page = ({title, children}: Props) => {
 
         document.title = `${prefix} ${title}`;
     }, [title]);
+
+    if (className) {
+        return <div className={className}>
+            {children}
+        </div>
+    }
 
     return children;
 }

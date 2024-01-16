@@ -12,13 +12,13 @@ const Layout = ({children}: Props) => {
         <Header/>
         <Space
             direction="horizontal"
-            classNames={{item: 'w-full'}}
+            classNames={{item: 'w-full mt-10 h-full'}}
         >
-            <AntLayout.Content className="relative h-[80vh] w-full md:p-12">
+            <AntLayout.Content className="relative w-full md:p-12 bg-white h-full">
                 {children}
             </AntLayout.Content>
         </Space>
-        <AntLayout.Footer className="mt-5">
+        <AntLayout.Footer className="mt-5 bg-white">
             کپی رایت {moment().locale('fa').format("y")}
         </AntLayout.Footer>
     </AntLayout>

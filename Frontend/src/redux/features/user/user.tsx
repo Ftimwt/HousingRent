@@ -3,6 +3,8 @@ import {useCallback, useEffect} from "react";
 import {useLazyWhoamiQuery, useLoginMutation} from "@housing_rent/redux/requests/auth";
 import useToken from "@housing_rent/redux/features/token/token";
 import {resetUser, setUser} from "@housing_rent/redux/features/user/userSlice";
+import create_account from "@housing_rent/components/dialog/auth/create_account";
+import {useCreateAccountMutation} from "@housing_rent/redux/requests/create_account";
 
 export default function useUser() {
     const {user} = useAppSelector((state) => state.user);
@@ -13,6 +15,12 @@ export default function useUser() {
         data: loginResponse,
         isLoading: loadingLogin
     }] = useLoginMutation();
+
+    const [createAccountReq, {
+        data: createAccountResponse,
+        isLoading: loadingCreateAccoun
+    }] = useCreateAccountMutation();
+
     const [whoami, {isLoading: whoamiLoading, data: userResponse, error: loginError}] = useLazyWhoamiQuery();
 
     const dispatch = useAppDispatch();
@@ -21,18 +29,23 @@ export default function useUser() {
         return loginReq(data);
     }, []);
 
+    const createAccount = useCallback((data: CreateAccountI) => {
+        return createAccountReq(data);
+    }, []);
+
     const logout = useCallback(() => {
         updateToken({refreshToken: undefined, accessToken: undefined});
         dispatch(resetUser());
     }, []);
 
     useEffect(() => {
-        if (!loginResponse) return;
+        if (!loginResponse && !createAccountResponse) return;
+
         updateToken({
-            refreshToken: loginResponse.token?.refresh,
-            accessToken: loginResponse.token?.access
+            refreshToken: (loginResponse ?? createAccountResponse)!.token?.refresh,
+            accessToken: (loginResponse ?? createAccountResponse)!.token?.access
         });
-    }, [loginResponse]);
+    }, [loginResponse, createAccountResponse]);
 
     useEffect(() => {
         whoami();
@@ -45,5 +58,5 @@ export default function useUser() {
 
     const loading = loadingLogin || whoamiLoading;
 
-    return {login, loading, user, loginError, logout};
+    return {login, loading, user, loginError, logout, createAccount};
 }

@@ -8,6 +8,8 @@ import AuthWrapper from "@housing_rent/wrapper/auth";
 import {Provider} from "react-redux";
 import store from "@housing_rent/redux/store";
 import TestPage from "@housing_rent/pages/test";
+import RentHousesPage from "@housing_rent/pages/RentHousesPage";
+import MyHousesPage from "@housing_rent/pages/MyHousesPage";
 
 const getTheme = (isDark?: boolean): ThemeConfig => ({
     token: {
@@ -33,7 +35,9 @@ function App() {
                                     <Routes>
                                         <Route path="/" element={<Home/>}>
                                         </Route>
+                                        <Route path="/rented" element={<RentHousesPage/>}></Route>
                                         <Route path="/test" element={<TestPage/>}></Route>
+                                        <Route path="/my/estates" element={<MyHousesPage/>}></Route>
                                     </Routes>
                                 </AuthWrapper>
                             </Layout>

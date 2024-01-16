@@ -127,7 +127,7 @@ const Home = () => {
                     {nearestHomeResponse?.estates.length ?
                         <>
                             <EstateListContext.Provider value={estatesListContext}>
-                                <EstateGrid estates={nearestHomeResponse.estates}/>
+                                <EstateGrid estates={nearestHomeResponse.estates} className="max-h-[500px]"/>
                             </EstateListContext.Provider>
                         </>
                         :

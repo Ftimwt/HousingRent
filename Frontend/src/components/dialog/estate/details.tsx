@@ -1,4 +1,4 @@
-import {App, Descriptions, Modal} from "antd";
+import {App, Descriptions, Modal, Typography} from "antd";
 import Convert from "@housing_rent/utils/convert";
 import {CloseCircle} from "iconsax-react";
 import convert from "@housing_rent/utils/convert";
@@ -9,6 +9,8 @@ import {
 } from "@housing_rent/redux/requests/tenant";
 import {useCallback, useEffect, useMemo} from "react";
 import {IsResponse} from "@housing_rent/utils/types_check";
+import Map from "@housing_rent/components/maps";
+import {MapContext, useMap} from "@housing_rent/components/maps/context";
 
 interface Props {
     open: boolean;
@@ -20,6 +22,8 @@ const EstateDetailsDialog = ({open, estate, onClose}: Props) => {
     const [request, {data, error, isLoading: requestLoading}] = useSendRentRequestMutation();
     const [removeRequest, {data: removeRequestData, error: removeRequestError}] = useRemoveRentRequestMutation();
     const {data: requestsResponse, refetch} = useRequestsQuery();
+
+    const [mapContext] = useMap({});
 
     const {message} = App.useApp();
 
@@ -76,6 +80,15 @@ const EstateDetailsDialog = ({open, estate, onClose}: Props) => {
             }
         }
     }, [removeRequestError]);
+
+    useEffect(() => {
+        if (!estate) return;
+        const marker = mapContext.addMarker({icon: 'house_icon', latlng: [estate.longitude, estate.latitude]});
+        mapContext.setCenter({latitude: estate.latitude, longitude: estate.longitude});
+        return () => {
+            marker?.remove?.();
+        }
+    }, [estate]);
 
     return <Modal
         open={open}
@@ -147,6 +160,17 @@ const EstateDetailsDialog = ({open, estate, onClose}: Props) => {
                             children: estate?.description != "" ? estate.description : 'توضیحات اضافه ندارد'
                         }]}
                     />
+
+                    <div className="relative h-[250px]">
+                        <MapContext.Provider value={mapContext}>
+                            <Map longitude={estate.longitude} latitude={estate.latitude}/>
+                        </MapContext.Provider>
+                    </div>
+
+                    <Typography.Link href={`https://neshan.org/maps/@${estate.latitude},${estate.longitude}/search/`}
+                                     target="_blank">
+                        باز کردن در نقشه نشان
+                    </Typography.Link>
                 </div>
                 :
                 <></>

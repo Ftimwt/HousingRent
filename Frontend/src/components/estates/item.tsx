@@ -1,21 +1,31 @@
 import {Button, Card, Descriptions, Divider, Tag} from "antd";
 import {useCallback, useContext, useMemo} from "react";
 import {EstateListContext} from "@housing_rent/components/estates/context";
+import useUser from "@housing_rent/redux/features/user/user";
 
 interface Props {
     estate: EstateModel;
 }
 
 const EstateItemCover = ({estate}: Props) => {
+    const {user} = useUser();
+
     const photo = import.meta.env.VITE_PREFIX_MEDIA + estate.files[0].photo_url;
 
     const fullName = useMemo(() => {
         return `${estate.owner.first_name} ${estate.owner.last_name}`
     }, [estate])
 
+    const ownerTitle = useMemo(() => {
+        if (estate.owner?.id === user?.id) {
+            return "ملک شما"
+        }
+        return "مالک " + fullName;
+    }, [estate, fullName]);
+
     return <div className="relative w-full">
         <img className="w-full" src={photo} alt="تصویر"/>
-        <Tag className="absolute bottom-0 z-10">{"مالک " + fullName}</Tag>
+        <Tag className="!absolute !bottom-0 z-10">{ownerTitle}</Tag>
     </div>
 }
 
@@ -27,7 +37,7 @@ const EstateItem = ({estate}: Props) => {
         setSelected(estate);
     }, [estate]);
 
-    return <Card className="shadow w-full min-w-[350px] max-w-[320px]" size="small"
+    return <Card className="shadow w-full min-w-[350px] max-w-[320px] flex flex-col content-between" size="small"
                  cover={<EstateItemCover estate={estate}/>}
     >
         <div className="flex flex-col gap-2">

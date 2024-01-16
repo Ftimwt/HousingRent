@@ -42,7 +42,7 @@ class AuthViewSet(ViewSet):
 
             refresh = RefreshToken.for_user(user)
             return Response({
-                'message': 'User created successfully',
+                'detail': 'User created successfully',
                 'token': {
                     'refresh': str(refresh),
                     'access': str(refresh.access_token),

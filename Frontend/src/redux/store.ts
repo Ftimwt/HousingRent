@@ -4,6 +4,8 @@ import {EstateApi} from "@housing_rent/redux/requests/estates";
 import {tokenSlice} from "@housing_rent/redux/features/token/tokenSlice";
 import {userSlice} from "@housing_rent/redux/features/user/userSlice";
 import {TenantApi} from "@housing_rent/redux/requests/tenant";
+import {OwnerApi} from "@housing_rent/redux/requests/owner";
+import {CreateAccountApi} from "@housing_rent/redux/requests/create_account";
 
 const store = configureStore({
     reducer: {
@@ -12,12 +14,16 @@ const store = configureStore({
         [AuthApi.reducerPath]: AuthApi.reducer,
         [EstateApi.reducerPath]: EstateApi.reducer,
         [TenantApi.reducerPath]: TenantApi.reducer,
+        [OwnerApi.reducerPath]: OwnerApi.reducer,
+        [CreateAccountApi.reducerPath]: CreateAccountApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware()
             .concat(AuthApi.middleware)
             .concat(EstateApi.middleware)
             .concat(TenantApi.middleware)
+            .concat(OwnerApi.middleware)
+            .concat(CreateAccountApi.middleware)
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
