@@ -1,12 +1,14 @@
 import React, {useEffect} from "react";
+import AuthWrapper from "@housing_rent/wrapper/auth";
 
 interface Props {
     children: React.ReactNode;
     title?: string;
-    className?: string;
+    login?: boolean;
+    isAdmin?: boolean;
 }
 
-const Page = ({title, children, className}: Props) => {
+const Page = ({title, children, login, isAdmin}: Props) => {
 
     useEffect(() => {
         let prefix = import.meta.env.VITE_APP_TITLE;
@@ -22,10 +24,10 @@ const Page = ({title, children, className}: Props) => {
         document.title = `${prefix} ${title}`;
     }, [title]);
 
-    if (className) {
-        return <div className={className}>
+    if (login || isAdmin) {
+        return <AuthWrapper isAdmin={!!isAdmin}>
             {children}
-        </div>
+        </AuthWrapper>
     }
 
     return children;

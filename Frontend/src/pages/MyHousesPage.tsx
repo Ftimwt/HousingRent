@@ -8,7 +8,7 @@ const MyHousesPage = () => {
     const {data: estates, isFetching} = useMyEstatesQuery()
 
 
-    return <Page title="املاک من" className="bg-white">
+    return <Page title="املاک من" login>
         <Typography.Title level={3}>املاک من</Typography.Title>
 
         <Divider/>

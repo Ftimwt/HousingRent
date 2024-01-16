@@ -5,5 +5,6 @@ interface UserModel {
     first_name: string,
     last_name: string,
     national_code: string,
-    address: string
+    address: string;
+    is_staff: boolean;
 }

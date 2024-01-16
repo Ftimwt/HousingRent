@@ -18,7 +18,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index_view, name='index'),
 
-    # User module
+                  # User module
     path('api/v1/auth/', include('User.urls')),
 
     # Estate module

@@ -7,7 +7,7 @@ import {Divider, Empty, Typography} from "antd";
 const RentHousesPage = () => {
     const {data: estates, isFetching} = useRentedHousesQuery();
 
-    return <Page title="خانه های اجاره شده" className="bg-white">
+    return <Page title="خانه های اجاره شده" login>
         <Typography.Title level={3}>خانه های اجاره شده</Typography.Title>
 
         <Divider/>

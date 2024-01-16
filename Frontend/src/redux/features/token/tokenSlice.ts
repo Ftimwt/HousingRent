@@ -20,9 +20,13 @@ export const tokenSlice = createSlice({
             state.refreshToken = action.payload.refreshToken;
             if (action.payload.accessToken)
                 TokenService.setLocalAccessToken(action.payload.accessToken);
+            else
+                TokenService.deleteLocalAccessToken()
 
             if (action.payload.refreshToken)
                 TokenService.setLocalRefreshToken(action.payload.refreshToken);
+            else
+                TokenService.deleteLocalRefreshToken()
         },
         updateAccessToken: (state, action: PayloadAction<string>) => {
             state.accessToken = action.payload;

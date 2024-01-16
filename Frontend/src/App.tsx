@@ -4,12 +4,13 @@ import Layout from "./layout";
 import Home from "./pages/home";
 import {ConfigProvider, theme, ThemeConfig, App as AntApp} from "antd";
 import {StyleProvider} from '@ant-design/cssinjs';
-import AuthWrapper from "@housing_rent/wrapper/auth";
 import {Provider} from "react-redux";
 import store from "@housing_rent/redux/store";
 import TestPage from "@housing_rent/pages/test";
 import RentHousesPage from "@housing_rent/pages/RentHousesPage";
 import MyHousesPage from "@housing_rent/pages/MyHousesPage";
+import Admin from "@housing_rent/pages/admin";
+import AdminPage from "@housing_rent/pages/admin";
 
 const getTheme = (isDark?: boolean): ThemeConfig => ({
     token: {
@@ -31,15 +32,14 @@ function App() {
                     <StyleProvider hashPriority="high">
                         <BrowserRouter>
                             <Layout>
-                                <AuthWrapper>
-                                    <Routes>
-                                        <Route path="/" element={<Home/>}>
-                                        </Route>
-                                        <Route path="/rented" element={<RentHousesPage/>}></Route>
-                                        <Route path="/test" element={<TestPage/>}></Route>
-                                        <Route path="/my/estates" element={<MyHousesPage/>}></Route>
-                                    </Routes>
-                                </AuthWrapper>
+                                <Routes>
+                                    <Route path="/" element={<Home/>}>
+                                    </Route>
+                                    <Route path="/rented" element={<RentHousesPage/>}></Route>
+                                    <Route path="/test" element={<TestPage/>}></Route>
+                                    <Route path="/my/estates" element={<MyHousesPage/>}></Route>
+                                    <Route path="/admin" element={<AdminPage/>}></Route>
+                                </Routes>
                             </Layout>
                         </BrowserRouter>
                     </StyleProvider>

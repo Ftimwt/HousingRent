@@ -16,6 +16,7 @@ class UserSerializer(serializers.Serializer):
     last_name = serializers.CharField()
     national_code = serializers.CharField()
     address = serializers.CharField()
+    is_staff = serializers.BooleanField()
 
 
 class CreateUserSerializer(serializers.Serializer):

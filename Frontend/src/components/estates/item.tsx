@@ -30,7 +30,7 @@ const EstateItemCover = ({estate}: Props) => {
 }
 
 const EstateItem = ({estate}: Props) => {
-    const {setSelected} = useContext(EstateListContext);
+    const {setSelected, buttonTitle} = useContext(EstateListContext);
 
     const handleClick = useCallback(() => {
 
@@ -71,7 +71,9 @@ const EstateItem = ({estate}: Props) => {
                     children: estate.mortgage_price.toLocaleString('fa') + " تومان"
                 }]}
             />
-            <Button onClick={handleClick}>مشاهده اطلاعات بیشتر</Button>
+            <Button onClick={handleClick}>
+                {buttonTitle ?? "مشاهده اطلاعات بیشتر"}
+            </Button>
         </div>
     </Card>
 }

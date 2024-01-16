@@ -3,7 +3,6 @@ import {useCallback, useEffect} from "react";
 import {useLazyWhoamiQuery, useLoginMutation} from "@housing_rent/redux/requests/auth";
 import useToken from "@housing_rent/redux/features/token/token";
 import {resetUser, setUser} from "@housing_rent/redux/features/user/userSlice";
-import create_account from "@housing_rent/components/dialog/auth/create_account";
 import {useCreateAccountMutation} from "@housing_rent/redux/requests/create_account";
 
 export default function useUser() {
@@ -18,7 +17,7 @@ export default function useUser() {
 
     const [createAccountReq, {
         data: createAccountResponse,
-        isLoading: loadingCreateAccoun
+        isLoading: loadingCreateAccount
     }] = useCreateAccountMutation();
 
     const [whoami, {isLoading: whoamiLoading, data: userResponse, error: loginError}] = useLazyWhoamiQuery();
@@ -56,7 +55,7 @@ export default function useUser() {
         dispatch(setUser(userResponse))
     }, [userResponse]);
 
-    const loading = loadingLogin || whoamiLoading;
+    const loading = loadingLogin || whoamiLoading || loadingCreateAccount;
 
     return {login, loading, user, loginError, logout, createAccount};
 }

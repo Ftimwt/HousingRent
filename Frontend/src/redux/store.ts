@@ -6,6 +6,7 @@ import {userSlice} from "@housing_rent/redux/features/user/userSlice";
 import {TenantApi} from "@housing_rent/redux/requests/tenant";
 import {OwnerApi} from "@housing_rent/redux/requests/owner";
 import {CreateAccountApi} from "@housing_rent/redux/requests/create_account";
+import {AdminApi} from "@housing_rent/redux/requests/admin";
 
 const store = configureStore({
     reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
         [TenantApi.reducerPath]: TenantApi.reducer,
         [OwnerApi.reducerPath]: OwnerApi.reducer,
         [CreateAccountApi.reducerPath]: CreateAccountApi.reducer,
+        [AdminApi.reducerPath]: AdminApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware()
@@ -24,6 +26,7 @@ const store = configureStore({
             .concat(TenantApi.middleware)
             .concat(OwnerApi.middleware)
             .concat(CreateAccountApi.middleware)
+            .concat(AdminApi.middleware)
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

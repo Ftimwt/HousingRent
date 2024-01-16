@@ -11,6 +11,7 @@ import {useCallback, useEffect, useMemo} from "react";
 import {IsResponse} from "@housing_rent/utils/types_check";
 import Map from "@housing_rent/components/maps";
 import {MapContext, useMap} from "@housing_rent/components/maps/context";
+import useUser from "@housing_rent/redux/features/user/user";
 
 interface Props {
     open: boolean;
@@ -21,6 +22,7 @@ interface Props {
 const EstateDetailsDialog = ({open, estate, onClose}: Props) => {
     const [request, {data, error, isLoading: requestLoading}] = useSendRentRequestMutation();
     const [removeRequest, {data: removeRequestData, error: removeRequestError}] = useRemoveRentRequestMutation();
+    const {user} = useUser();
     const {data: requestsResponse, refetch} = useRequestsQuery();
 
     const [mapContext] = useMap({});
@@ -48,7 +50,8 @@ const EstateDetailsDialog = ({open, estate, onClose}: Props) => {
     }, [estate, reqId]);
 
     const handleOk = useCallback(() => {
-    }, [handleSendRequest, reqId]);
+        handleSendRequest();
+    }, [handleSendRequest]);
 
     // handle change data
     useEffect(() => {
@@ -95,13 +98,13 @@ const EstateDetailsDialog = ({open, estate, onClose}: Props) => {
         onOk={handleOk}
         onCancel={handleClose}
         closeIcon={<CloseCircle/>}
-        okText={!!reqId ? "لغو درخواست" : "درخواست اجاره ملک"}
+        okText={user ? (!!reqId ? "لغو درخواست" : "درخواست اجاره ملک") : "برای درخواست اجاره وارد سایت شوید"}
         cancelText="بستن"
         cancelButtonProps={{
             disabled: requestLoading,
         }}
         okButtonProps={{
-            disabled: requestLoading,
+            disabled: requestLoading || !user,
             danger: !!reqId
         }}
     >

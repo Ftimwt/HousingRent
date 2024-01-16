@@ -9,6 +9,7 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
+  "proxy": "http://localhost:8000",
   "dependencies": {
     "@ant-design/cssinjs": "^1.18.2",
     "@neshan-maps-platform/mapbox-gl": "^1.1.1",
