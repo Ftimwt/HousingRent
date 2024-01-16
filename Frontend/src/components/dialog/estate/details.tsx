@@ -2,8 +2,12 @@ import {App, Descriptions, Modal} from "antd";
 import Convert from "@housing_rent/utils/convert";
 import {CloseCircle} from "iconsax-react";
 import convert from "@housing_rent/utils/convert";
-import {useSendRentRequestMutation} from "@housing_rent/redux/requests/tenant";
-import {useCallback, useEffect} from "react";
+import {
+    useRemoveRentRequestMutation,
+    useRequestsQuery,
+    useSendRentRequestMutation
+} from "@housing_rent/redux/requests/tenant";
+import {useCallback, useEffect, useMemo} from "react";
 import {IsResponse} from "@housing_rent/utils/types_check";
 
 interface Props {
@@ -14,7 +18,16 @@ interface Props {
 
 const EstateDetailsDialog = ({open, estate, onClose}: Props) => {
     const [request, {data, error, isLoading: requestLoading}] = useSendRentRequestMutation();
+    const [removeRequest, {data: removeRequestData, error: removeRequestError}] = useRemoveRentRequestMutation();
+    const {data: requestsResponse, refetch} = useRequestsQuery();
+
     const {message} = App.useApp();
+
+    const reqId = useMemo(() => {
+        if (!requestsResponse || !estate?.id) return false;
+        const result = requestsResponse.filter(req => req.estate.id == estate.id).map(req => req.id);
+        return result.length ? result[0] : false;
+    }, [requestsResponse, estate]);
 
     const handleClose = () => {
         if (requestLoading) return;
@@ -23,40 +36,60 @@ const EstateDetailsDialog = ({open, estate, onClose}: Props) => {
 
     const handleSendRequest = useCallback(() => {
         if (!estate) return;
-        request(estate.id);
-    }, [estate]);
+        if (reqId) {
+            removeRequest(estate.id);
+        } else {
+            request(estate.id);
+        }
+    }, [estate, reqId]);
 
     const handleOk = useCallback(() => {
-        handleSendRequest();
-    }, [handleSendRequest]);
+    }, [handleSendRequest, reqId]);
 
     // handle change data
     useEffect(() => {
         if (!data?.detail) return;
         message.success(data.detail).then();
+        refetch();
     }, [data]);
 
     useEffect(() => {
         if (!error) return;
         if ('data' in error) {
             if (IsResponse(error.data)) {
-                message.success(error.data.detail).then();
+                message.error(error.data.detail).then();
             }
         }
     }, [error]);
+
+    useEffect(() => {
+        if (!removeRequestData?.detail) return;
+        message.success(removeRequestData.detail).then();
+        refetch();
+    }, [removeRequestData]);
+
+    useEffect(() => {
+        if (!removeRequestError) return;
+        if ('data' in removeRequestError) {
+            if (IsResponse(removeRequestError.data)) {
+                message.error(removeRequestError.data.detail).then();
+            }
+        }
+    }, [removeRequestError]);
 
     return <Modal
         open={open}
         onOk={handleOk}
         onCancel={handleClose}
         closeIcon={<CloseCircle/>}
-        okText="درخواست اجاره ملک"
+        okText={!!reqId ? "لغو درخواست" : "درخواست اجاره ملک"}
         cancelText="بستن"
         cancelButtonProps={{
-            disabled: requestLoading
+            disabled: requestLoading,
         }}
         okButtonProps={{
-            disabled: requestLoading
+            disabled: requestLoading,
+            danger: !!reqId
         }}
     >
         <div className="flex flex-col">

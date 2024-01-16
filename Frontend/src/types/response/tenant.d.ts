@@ -1,3 +1,4 @@
-interface SendRentReqestDataI {
-
-}
+type SendRentListResponseI = {
+    id: number;
+    estate: EstateModel;
+}[];

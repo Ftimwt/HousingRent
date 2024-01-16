@@ -13,9 +13,23 @@ export const TenantApi = createApi({
             query: (id) => ({
                 url: `estates/rent/${id}/request`,
                 method: 'put',
-            })
+            }),
+            invalidatesTags: ['tenant']
+        }),
+        removeRentRequest: builder.mutation<BaseResponse, number>({
+            query: (id) => ({
+                url: `estates/rent/${id}/request`,
+                method: 'delete',
+            }),
+            invalidatesTags: ['tenant']
+        }),
+        requests: builder.query<SendRentListResponseI, void>({
+            query: () => ({
+                url: 'estates/rent/requests',
+            }),
+            providesTags: ['tenant']
         })
     })
 });
 
-export const {useSendRentRequestMutation} = TenantApi;
+export const {useSendRentRequestMutation, useRequestsQuery, useRemoveRentRequestMutation} = TenantApi;
