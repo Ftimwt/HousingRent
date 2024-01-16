@@ -4,3 +4,8 @@ interface PointI {
 }
 
 type CircleName = string;
+
+interface MapPopupI {
+    text: string;
+    image: string;
+}

@@ -1,6 +1,5 @@
 import {MapComponent} from "@neshan-maps-platform/mapbox-gl-react";
-import {useContext, useEffect, useState} from "react";
-import SDKMap from "@neshan-maps-platform/mapbox-gl/dist/src/core/Map";
+import {useContext, useEffect} from "react";
 import {MapContext} from "@housing_rent/components/maps/context";
 
 
@@ -33,7 +32,8 @@ const Map = (props: MapProps) => {
             zoom: 15,
         }}
         mapSetter={setMap}
-    />
+    >
+    </MapComponent>
 }
 
 export default Map;

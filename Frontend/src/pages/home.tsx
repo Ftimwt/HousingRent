@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import Page from "./page";
 import {Empty} from "antd";
 import {useNearestEstateQuery} from "@housing_rent/redux/requests/estates";
@@ -7,7 +7,9 @@ import Loading from "@housing_rent/components/loading/loading";
 import KmSlider from "@housing_rent/components/slider/km";
 import {MapContext, useMap} from "@housing_rent/components/maps/context";
 import Map from "@housing_rent/components/maps";
-import {createGeoJSONCircle} from "@housing_rent/components/maps/draw_radius_km";
+import Convert from "@housing_rent/utils/convert";
+import EstateDetailsDialog from "@housing_rent/components/dialog/estate/details";
+import {EstateListContext, useEstateList} from "@housing_rent/components/estates/context";
 
 interface MapPoint {
     loc: [number, number];
@@ -21,6 +23,11 @@ const Home = () => {
 
     const [mapContext] = useMap(def);
 
+    const [estateDetails, setEstateDetails] = useState<EstateModel>();
+
+    const [estatesListContext] = useEstateList();
+
+
     const {data: nearestHomeResponse, isFetching: nearestLoading} = useNearestEstateQuery({
         latitude: mapContext.selectedPoint.latitude,
         longitude: mapContext.selectedPoint.longitude,
@@ -33,17 +40,41 @@ const Home = () => {
             if (!nearestHomeResponse || !mapContext.map) return () => {
             };
             const {estates} = nearestHomeResponse;
-            const points: MapPoint[] = estates.map(estate => ({
-                loc: [estate.longitude, estate.latitude],
-                type: 'building'
-            }));
 
-
-            const result = points.map(point => {
-                return mapContext.addMarker({
+            const result = estates.map(estate => {
+                const point: MapPoint = {
+                    loc: [estate.longitude, estate.latitude],
+                    type: 'building'
+                };
+                const marker = mapContext.addMarker({
                     icon: 'building',
-                    latlng: point.loc
+                    latlng: point.loc,
+                    onClick: () => {
+                        console.log('hello world');
+                        setEstateDetails(estate);
+                    }
                 })!;
+                let image = import.meta.env.VITE_PREFIX_MEDIA + estate.files[0].photo_url;
+                const htmlText = `<div class="flex flex-col gap-2">
+                    <span class="text-gray-400">آدرس:</span>
+                    <span>
+                        ${estate.address}
+                    </span>
+                    <div class="flex flex-row flex-wrap gap-2">
+                        <div class="flex flex-col">
+                            <span class="text-gray-400">قیمت اجاره: </span>
+                            <span>${Convert.convertPrice(estate.rental_price)}</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-gray-400">قیمت رهن: </span>
+                            <span>${Convert.convertPrice(estate.rental_price)}</span>
+                        </div>
+                    </div>
+                </div>`
+                marker.setPopup({
+                    image: image, text: htmlText
+                });
+                return marker;
             });
             return () => {
                 for (const marker of result) {
@@ -53,7 +84,6 @@ const Home = () => {
         }, [nearestHomeResponse, mapContext.map]
     );
 
-
     useEffect(() => {
         const id = mapContext.drawCircleInKm(mapContext.selectedPoint, maxDistance);
         return () => {
@@ -61,8 +91,20 @@ const Home = () => {
         }
     }, [mapContext.selectedPoint, maxDistance, mapContext.map])
 
+    useEffect(() => {
+        if (!estatesListContext.selected) return;
+        setEstateDetails(estatesListContext.selected);
+    }, [estatesListContext.selected]);
+
+    const handleCloseEstateDialog = useCallback(() => {
+        setEstateDetails(undefined);
+        estatesListContext.setSelected(undefined);
+    }, [])
+
     return <Page>
-        <div className="flex flex-col gap-5 min-h-[500px] md:flex-col sm:flex-col lg:flex-row">
+        <EstateDetailsDialog open={!!estateDetails} estate={estateDetails!}
+                             onClose={handleCloseEstateDialog}/>
+        <div className="flex flex-col gap-5 min-h-[750px] md:flex-col sm:flex-col lg:flex-row">
             <div className="w-full bg-white rounded shadow-1xl p-5">
                 <div className="relative w-full h-full overflow-hidden rounded min-h-[500px]">
                     <MapContext.Provider value={mapContext}>
@@ -84,7 +126,9 @@ const Home = () => {
                 <Loading loading={loading}>
                     {nearestHomeResponse?.estates.length ?
                         <>
-                            <EstateGrid estates={nearestHomeResponse.estates}/>
+                            <EstateListContext.Provider value={estatesListContext}>
+                                <EstateGrid estates={nearestHomeResponse.estates}/>
+                            </EstateListContext.Provider>
                         </>
                         :
                         <div className="flex items-center m-auto">

@@ -1,9 +1,10 @@
-import {Card, Descriptions, Divider, Tag} from "antd";
-import {useMemo} from "react";
+import {Button, Card, Descriptions, Divider, Tag} from "antd";
+import {useCallback, useContext, useMemo} from "react";
+import {EstateListContext} from "@housing_rent/components/estates/context";
 
 interface Props {
     estate: EstateModel;
-EstateModel}
+}
 
 const EstateItemCover = ({estate}: Props) => {
     const photo = import.meta.env.VITE_PREFIX_MEDIA + estate.files[0].photo_url;
@@ -19,6 +20,13 @@ const EstateItemCover = ({estate}: Props) => {
 }
 
 const EstateItem = ({estate}: Props) => {
+    const {setSelected} = useContext(EstateListContext);
+
+    const handleClick = useCallback(() => {
+
+        setSelected(estate);
+    }, [estate]);
+
     return <Card className="shadow w-full min-w-[350px] max-w-[320px]" size="small"
                  cover={<EstateItemCover estate={estate}/>}
     >
@@ -53,6 +61,7 @@ const EstateItem = ({estate}: Props) => {
                     children: estate.mortgage_price.toLocaleString('fa') + " تومان"
                 }]}
             />
+            <Button onClick={handleClick}>مشاهده اطلاعات بیشتر</Button>
         </div>
     </Card>
 }

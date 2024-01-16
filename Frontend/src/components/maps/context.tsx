@@ -61,7 +61,6 @@ export const useMap = (props: MapContextProviderProps) => {
     const drawCircleInKm = useCallback((center: PointI, radiusInKm: number, points?: number): CircleName => {
         if (!map) return "";
         const source = createGeoJSONCircle(center, radiusInKm, points);
-        let result = 0;
         setCircle(x => x + 1);
         let id = "polygon" + circle;
         (map as any).addSource(id, source);

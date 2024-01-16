@@ -27,7 +27,7 @@ class Command(BaseCommand):
 
             estate.rental_price = rnd.randint(int(math.pow(10, 6)) + 40, int(math.pow(10, 7)))
             estate.mortgage_price = estate.rental_price * rnd.randint(3, 10)
-            estate.size_of_house = estate.rental_price / math.pow(10, 6)
+            estate.size_of_house = estate.rental_price / math.pow(10, 5)
 
             if rnd.randint(0, 2) == 2:
                 estate.tenant = User.objects.exclude(id=estate.owner.id).order_by('?').first()

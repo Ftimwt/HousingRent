@@ -18,15 +18,17 @@ export interface MarkerOption {
     icon: keyof typeof icons;
     draggable?: boolean;
     latlng?: [number, number];
+    onClick?: () => void;
 }
 
 export interface MarkerMethod {
     addMap: (map: SDKMap) => void;
     setLngLat: (point: [number, number]) => void;
     remove: () => void;
+    setPopup: (_: MapPopupI) => void;
 }
 
-const Marker = ({icon, draggable}: MarkerOption): MarkerMethod => {
+const Marker = ({icon, draggable, latlng, onClick}: MarkerOption): MarkerMethod => {
     const el = document.createElement('div');
     el.className = 'marker';
 
@@ -40,6 +42,20 @@ const Marker = ({icon, draggable}: MarkerOption): MarkerMethod => {
     el.style.backgroundSize = '100%';
 
     const marker = new nmp_mapboxgl.Marker(el);
+
+    marker.on('click', () => {
+        onClick?.();
+    })
+
+    const markerDiv = marker.getElement();
+
+    if (latlng)
+        marker.setLngLat({lng: latlng[0], lat: latlng[1]});
+
+    markerDiv.addEventListener('mouseenter', () => marker.togglePopup());
+    markerDiv.addEventListener('mouseleave', () => marker.togglePopup());
+
+    markerDiv.addEventListener('click', () => onClick?.());
 
     if (draggable)
         marker.setDraggable(draggable);
@@ -56,7 +72,19 @@ const Marker = ({icon, draggable}: MarkerOption): MarkerMethod => {
         marker.setLngLat({lng: latlng[0], lat: latlng[1]});
     }
 
-    return {addMap, remove, setLngLat}
+    const setPopup = ({text, image}: MapPopupI) => {
+        const html = `<div class="flex flex-col gap-3">
+            <img src="${image}" alt="can not found the photo !" class="">
+            <div>
+            ${text}
+            </div>
+        </div>`
+
+        const popup = new nmp_mapboxgl.Popup({offset: 25}).setHTML(html);
+        marker.setPopup(popup);
+    }
+
+    return {addMap, remove, setLngLat, setPopup};
 }
 
 export default Marker;
