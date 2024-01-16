@@ -33,18 +33,18 @@ class RentRequestManager(views.APIView):
 
         if not estate:
             return response.Response({
-                "details": "مسکن یافت نشد."
+                "detail": "مسکن یافت نشد."
             }, status=status.HTTP_404_NOT_FOUND)
 
         if estate.owner.id == user.id:
             return response.Response({
-                "details": "شما نمی توانید به مسکن خود درخواست اجاره دهید."
+                "detail": "شما نمی توانید به مسکن خود درخواست اجاره دهید."
             }, status=status.HTTP_400_BAD_REQUEST)
 
         request_exists = EstateRequest.objects.filter(user=user, estate=estate).exists()
         if request_exists:
             return response.Response({
-                "details": "شما قبلا برای این مسکن درخواست داده اید."
+                "detail": "شما قبلا برای این مسکن درخواست داده اید."
             }, status=status.HTTP_400_BAD_REQUEST)
 
         req = EstateRequest()
@@ -54,7 +54,7 @@ class RentRequestManager(views.APIView):
         req.save()
 
         return response.Response({
-            "details": "درخواست با موفقیت صادر شد."
+            "detail": "درخواست با موفقیت صادر شد."
         })
 
     def _handle_remove_request(self, **kwargs):
@@ -64,7 +64,7 @@ class RentRequestManager(views.APIView):
 
         if not estate:
             return response.Response({
-                "details": "مسکن یافت نشد."
+                "detail": "مسکن یافت نشد."
             }, status=status.HTTP_404_NOT_FOUND)
 
         user = self.request.user
@@ -72,17 +72,17 @@ class RentRequestManager(views.APIView):
 
         if not request_exists:
             return response.Response({
-                "details": "برای این مسکن درخواستی ثبت نکرده اید."
+                "detail": "برای این مسکن درخواستی ثبت نکرده اید."
             })
 
         result = EstateRequest.objects.filter(user=user, estate=estate).delete()[1]
         if result == 0:
             return response.Response({
-                "details": "خطایی در حذف درخواست اجاره مسکن رخ داده است."
+                "detail": "خطایی در حذف درخواست اجاره مسکن رخ داده است."
             }, status.HTTP_400_BAD_REQUEST)
 
         return response.Response({
-            "details": 'درخواست حذف مسکن با موفیت ایجاد شد.'
+            "detail": 'درخواست حذف مسکن با موفیت ایجاد شد.'
         })
 
 

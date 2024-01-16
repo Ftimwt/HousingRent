@@ -1,7 +1,10 @@
-import {Descriptions, Modal} from "antd";
+import {App, Descriptions, Modal} from "antd";
 import Convert from "@housing_rent/utils/convert";
 import {CloseCircle} from "iconsax-react";
 import convert from "@housing_rent/utils/convert";
+import {useSendRentRequestMutation} from "@housing_rent/redux/requests/tenant";
+import {useCallback, useEffect} from "react";
+import {IsResponse} from "@housing_rent/utils/types_check";
 
 interface Props {
     open: boolean;
@@ -10,16 +13,51 @@ interface Props {
 }
 
 const EstateDetailsDialog = ({open, estate, onClose}: Props) => {
+    const [request, {data, error, isLoading: requestLoading}] = useSendRentRequestMutation();
+    const {message} = App.useApp();
+
     const handleClose = () => {
+        if (requestLoading) return;
         onClose?.();
     }
 
+    const handleSendRequest = useCallback(() => {
+        if (!estate) return;
+        request(estate.id);
+    }, [estate]);
+
+    const handleOk = useCallback(() => {
+        handleSendRequest();
+    }, [handleSendRequest]);
+
+    // handle change data
+    useEffect(() => {
+        if (!data?.detail) return;
+        message.success(data.detail).then();
+    }, [data]);
+
+    useEffect(() => {
+        if (!error) return;
+        if ('data' in error) {
+            if (IsResponse(error.data)) {
+                message.success(error.data.detail).then();
+            }
+        }
+    }, [error]);
+
     return <Modal
         open={open}
+        onOk={handleOk}
         onCancel={handleClose}
         closeIcon={<CloseCircle/>}
         okText="درخواست اجاره ملک"
         cancelText="بستن"
+        cancelButtonProps={{
+            disabled: requestLoading
+        }}
+        okButtonProps={{
+            disabled: requestLoading
+        }}
     >
         <div className="flex flex-col">
             {estate ?

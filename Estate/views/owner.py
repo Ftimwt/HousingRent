@@ -85,7 +85,7 @@ class EstateFilesUploadViewSet(generics.CreateAPIView):
         serializer.save()
 
         headers = self.get_success_headers(serializer.data)
-        return Response({"details": "File has uploaded successfully."}, status=status.HTTP_200_OK, headers=headers)
+        return Response({"detail": "File has uploaded successfully."}, status=status.HTTP_200_OK, headers=headers)
 
 
 class EstateFilesDeleteViewSet(generics.DestroyAPIView):
@@ -124,12 +124,12 @@ class EstateRequestsControl(views.APIView):
 
         if req is None:
             return Response({
-                "details": "درخواست یافت نشد برای تایید."
+                "detail": "درخواست یافت نشد برای تایید."
             }, status=status.HTTP_400_BAD_REQUEST)
 
         if req.estate.owner_id != user.id:
             return Response({
-                "details": "شما به این درخواست دسترسی ندارید."
+                "detail": "شما به این درخواست دسترسی ندارید."
             }, status=status.HTTP_403_FORBIDDEN)
 
         # make the request accepted
@@ -145,7 +145,7 @@ class EstateRequestsControl(views.APIView):
             return req
 
         return Response({
-            "details": "درخواست اجاره ملک شما برای این کاربر رد شد."
+            "detail": "درخواست اجاره ملک شما برای این کاربر رد شد."
         }, status=status.HTTP_200_OK)
 
     def _handle_accept(self, **kwargs):
@@ -159,5 +159,5 @@ class EstateRequestsControl(views.APIView):
         req.estate.save()
 
         return Response({
-            "details": "درخواست اجاره ملک شما برای این کاربر تایید شد."
+            "detail": "درخواست اجاره ملک شما برای این کاربر تایید شد."
         }, status=status.HTTP_200_OK)

@@ -19,23 +19,23 @@ class EstateAdminView(ViewSet):
         estate = Estate.objects.filter(id=estate_id).first()
         if estate is None:
             return Response({
-                "details": "ملک وجود ندارد"
+                "detail": "ملک وجود ندارد"
             }, status=status.HTTP_404_NOT_FOUND)
 
         if estate.is_confirm:
             return Response({
-                "details": "این ملک تایید شده است."
+                "detail": "این ملک تایید شده است."
             }, status=status.HTTP_400_BAD_REQUEST)
 
         result = Estate.objects.filter(pk=estate_id).update(is_confirm=True)
 
         if result <= 0:
             return Response({
-                "details": "خطایی در بروزرسانی ایجاد شده.",
+                "detail": "خطایی در بروزرسانی ایجاد شده.",
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({
-            "details": "ملک تایید شد",
+            "detail": "ملک تایید شد",
         })
 
     @action(methods=['post'], detail=False)
@@ -45,11 +45,11 @@ class EstateAdminView(ViewSet):
 
         if result <= 0:
             return Response({
-                "details": "خطایی در بروزرسانی ایجاد شده.",
+                "detail": "خطایی در بروزرسانی ایجاد شده.",
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({
-            "details": "ملک به حالت تایید نشده برگشت.",
+            "detail": "ملک به حالت تایید نشده برگشت.",
         })
 
 
