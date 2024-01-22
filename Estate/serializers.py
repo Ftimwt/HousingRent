@@ -2,7 +2,7 @@
 from rest_framework import serializers
 
 from User.serializers import UserSerializer
-from .models import Estate, EstateFile, EstateRequest
+from .models import Estate, EstateFile, EstateRequest, EstateContract, EstateContractInstallment
 
 
 class CreateEstateSerializer(serializers.ModelSerializer):
@@ -102,3 +102,33 @@ class EstateTenantRequestSerializer(serializers.ModelSerializer):
 
     def get_estate(self, req):
         return EstateUserSerializer(req.estate).data
+
+
+class EstateContractSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EstateContract
+        fields = ['id',
+                  'owner',
+                  'tenant',
+                  'estate',
+                  'text',
+                  'price',
+                  'start_time',
+                  'end_time',
+                  'created_at'
+                  ]
+
+
+class EstateContractInstallmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EstateContractInstallment
+        fields = [
+            'id',
+            'owner',
+            'tenant',
+            'is_paid',
+            'price',
+            'date',
+            'status',
+            'created_at',
+        ]

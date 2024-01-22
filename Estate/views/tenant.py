@@ -3,8 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ViewSet
 
-from Estate.models import Estate, EstateRequest
-from Estate.serializers import EstateUserSerializer, EstateTenantRequestSerializer
+from Estate.models import Estate, EstateRequest, EstateContractInstallment
+from Estate.serializers import EstateUserSerializer, EstateTenantRequestSerializer, EstateContractInstallmentSerializer
 
 
 class RentHouseView(generics.ListAPIView):
@@ -93,3 +93,12 @@ class RentRequestList(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return EstateRequest.objects.filter(user=user).order_by('-id')
+
+
+class TenantInstallments(generics.ListAPIView):
+    queryset = EstateContractInstallment
+    serializer_class = EstateContractInstallmentSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return EstateContractInstallment.objects.filter(tenant=user).order_by('-id')

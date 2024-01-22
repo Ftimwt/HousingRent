@@ -9,6 +9,12 @@ ESTATE_USER_TYPES_CHOICES = (
     ("owner", "صاحب ملک")
 )
 
+INSTALLMENT_TYPES_CHOICES = (
+    ("paid", "پرداخت شده"),
+    ("awaiting", "درانتظار پرداخت"),
+    ("soon", "زمان پرداخت نرسیده است")
+)
+
 
 class Estate(models.Model):
     estate_type = models.CharField(choices=ESTATE_TYPES_CHOICES, max_length=25, default="residential")
@@ -24,6 +30,11 @@ class Estate(models.Model):
     tenant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rented_properties', null=True, blank=True)
 
     is_confirm = models.BooleanField(default=False)
+
+    def model(self, model_type):
+        if model_type == "tenant":
+            return self.tenant
+        return self.owner
 
 
 class EstateFile(models.Model):
@@ -48,3 +59,29 @@ class EstateRequest(models.Model):
 
     created_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
+
+
+# قرارداد ها
+class EstateContract(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner_contracts")
+    tenant = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tenant_contracts")
+    estate = models.ForeignKey(Estate, on_delete=models.CASCADE)
+    text = models.TextField()
+    price = models.FloatField()
+
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+# صورتحساب ها
+class EstateContractInstallment(models.Model):
+    contract = models.ForeignKey(EstateContract, on_delete=models.CASCADE)
+    price = models.FloatField()
+    is_paid = models.BooleanField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField()
+    status = models.CharField(choices=INSTALLMENT_TYPES_CHOICES, max_length=50)
+    owner = models.ForeignKey(User, on_delete=models, related_name="owner_user")
+    tenant = models.ForeignKey(User, on_delete=models, related_name="tenant_user")
