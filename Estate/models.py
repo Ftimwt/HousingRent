@@ -83,5 +83,5 @@ class EstateContractInstallment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     date = models.DateTimeField()
     status = models.CharField(choices=INSTALLMENT_TYPES_CHOICES, max_length=50)
-    owner = models.ForeignKey(User, on_delete=models, related_name="owner_user")
-    tenant = models.ForeignKey(User, on_delete=models, related_name="tenant_user")
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner_user")
+    tenant = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tenant_user")
