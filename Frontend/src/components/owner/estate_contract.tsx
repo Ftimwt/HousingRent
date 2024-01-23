@@ -5,10 +5,10 @@ import {convertPrice} from "@housing_rent/utils/convert";
 import moment from "jalali-moment";
 
 
-const STATUS_NAMES: {[key: string]: string} = {
+const STATUS_NAMES: { [key: string]: string } = {
     "paid": "پرداخت شده",
     "awaiting": "در انتظار پرداخت",
-    "soon": "پرداخت شده"
+    "soon": "وقت پرداخت نیست"
 }
 
 interface ContractInstallmentProps {
@@ -16,20 +16,22 @@ interface ContractInstallmentProps {
 }
 
 const ContractInstallment = ({items}: ContractInstallmentProps) => {
-    return <div>
+    return <List>
         {items.map(item => (
-            <Descriptions items={[
-                {
-                    label: 'مبلغ',
-                    children: item.price
-                },
-                {
-                    label: 'وضعیت',
-                    children: STATUS_NAMES[item.status]
-                }]
-            }/>
+            <List.Item>
+                <Descriptions items={[
+                    {
+                        label: 'مبلغ',
+                        children: item.price
+                    },
+                    {
+                        label: 'وضعیت',
+                        children: STATUS_NAMES[item.status]
+                    }
+                ]}/>
+            </List.Item>
         ))}
-    </div>
+    </List>
 }
 
 type ContractItemProps = {
@@ -46,7 +48,7 @@ const ContractItem = ({contract}: ContractItemProps) => {
 
     const handleShowInstallments = () => {
         if (!data) return;
-        modal.info({content: <ContractInstallment items={data?.filter(x => x.contract == contract.id )}/>})
+        modal.info({content: <ContractInstallment items={data?.filter(x => x.contract.id == contract.id)}/>})
     };
 
     if (!contract) return <></>;

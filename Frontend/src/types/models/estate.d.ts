@@ -40,6 +40,6 @@ interface EstateContractInstallments {
     'price': number;
     'date': string;
     'status': string;
-    contract: number;
+    contract: EstateContract;
     'created_at': string;
 }
