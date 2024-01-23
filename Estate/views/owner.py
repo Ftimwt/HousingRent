@@ -10,7 +10,7 @@ from persiantools.jdatetime import JalaliDate
 from Estate.decorator.estate import is_estate_owner
 from Estate.models import Estate, EstateRequest, EstateContract, EstateContractInstallment
 from Estate.serializers import CreateEstateSerializer, EstateFileSerializer, EstateOwnerRequestSerializer, \
-    EstateContractInstallmentSerializer
+    EstateContractInstallmentSerializer, EstateContractSerializer
 from Estate.template.contract_text import CONTRACT_TEMPLATE
 
 
@@ -201,11 +201,19 @@ class EstateRequestsControl(views.APIView):
             installment.date = today.replace(month=today.month + i)
             # تعیین صورت حساب ماه اول به عنوان در انتظار پرداخت
             installment.status = "awaiting" if i == 0 else "soon"
+            installment.owner = req.estate.owner
+            installment.tenant = req.estate.tenant
             installment.save()
 
         return Response({
             "detail": "درخواست اجاره ملک شما برای این کاربر تایید شد."
         }, status=status.HTTP_200_OK)
+
+    serializer_class = EstateContractInstallmentSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return EstateContractInstallment.objects.filter(owner=user).order_by('-id')
 
 
 # دریافت لیست صورت حساب هایی که متعلق به مالک هست و پول به حساب مالک میرود

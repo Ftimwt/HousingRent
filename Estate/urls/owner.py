@@ -9,5 +9,6 @@ urlpatterns = [
     path('/<int:pk>/photos', EstateFilesUploadViewSet.as_view()),
     path('/requests', EstateRequestsList.as_view()),
     path('/<int:req_id>/request', EstateRequestsControl.as_view()),
-    path('/installment', OwnerInstallments.as_view())
+    path('/contracts/installments', OwnerInstallments.as_view()),
+    path('/contracts', OwnerInstallments.as_view())
 ]

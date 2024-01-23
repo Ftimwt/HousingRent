@@ -8,30 +8,35 @@ import {Link} from "react-router-dom";
 import CreateAccount from "@housing_rent/components/dialog/auth/create_account";
 
 const items = (user?: UserModel): MenuItemType[] => {
-    const result = [
-        {
-            key: 'home',
-            label: <Link to="/">اجاره خانه</Link>,
-        },
-        {
-            key: 'rent',
-            label: <Link to="/rented">خانه های اجاره شده</Link>,
-        },
-        {
-            key: 'my_estates',
-            label: <Link to={'/my/estates'}>املاک من</Link>,
+        const result = [
+            {
+                key: 'home',
+                label: <Link to="/">اجاره خانه</Link>,
+            },
+            {
+                key: 'rent',
+                label: <Link to="/rented">خانه های اجاره شده</Link>,
+            },
+            {
+                key: 'my_estates',
+                label: <Link to={'/my/estates'}>املاک من</Link>,
+            },
+            {
+                key: 'estates_request',
+                label: <Link to={'/my/estates/requests'}>درخواست املاک</Link>,
+            }
+        ];
+
+        if (user?.is_staff) {
+            result.push({
+                key: 'admin',
+                label: <Link to="/admin">مدیریت سیستم</Link>
+            })
         }
-    ];
 
-    if (user?.is_staff) {
-        result.push({
-            key: 'admin',
-            label: <Link to="/admin">مدیریت سیستم</Link>
-        })
+        return result;
     }
-
-    return result;
-};
+;
 
 const Header = () => {
     const [loginOpen, setLoginOpen] = useState<boolean>(false);

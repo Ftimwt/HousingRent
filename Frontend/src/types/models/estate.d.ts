@@ -19,3 +19,27 @@ interface EstateModel {
     owner: UserModel;
     is_confirm: boolean;
 }
+
+interface EstateContract {
+    id: number;
+    owner: UserModel;
+    tenant: UserModel;
+    estate: EstateModel;
+    text: string;
+    price: number;
+    start_time: string;
+    end_time: string;
+    created_at: string;
+}
+
+interface EstateContractInstallments {
+    'id': number;
+    'owner': UserModel;
+    'tenant': UserModel;
+    'is_paid': boolean;
+    'price': number;
+    'date': string;
+    'status': string;
+    contract: number;
+    'created_at': string;
+}

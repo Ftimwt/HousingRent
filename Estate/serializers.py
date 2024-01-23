@@ -105,6 +105,8 @@ class EstateTenantRequestSerializer(serializers.ModelSerializer):
 
 
 class EstateContractSerializer(serializers.ModelSerializer):
+    estate = serializers.SerializerMethodField()
+
     class Meta:
         model = EstateContract
         fields = ['id',
@@ -118,8 +120,13 @@ class EstateContractSerializer(serializers.ModelSerializer):
                   'created_at'
                   ]
 
+    def get_estate(self, req):
+        return EstateUserSerializer(req.estate).data
+
 
 class EstateContractInstallmentSerializer(serializers.ModelSerializer):
+    contract = serializers.SerializerMethodField()
+
     class Meta:
         model = EstateContractInstallment
         fields = [
@@ -131,4 +138,8 @@ class EstateContractInstallmentSerializer(serializers.ModelSerializer):
             'date',
             'status',
             'created_at',
+            'contract'
         ]
+
+    def get_contract(self, req):
+        return EstateContractSerializer(req.contract).data

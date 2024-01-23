@@ -4,7 +4,7 @@ from rest_framework import views, status
 from rest_framework.response import Response
 
 from Estate.models import Estate
-from Estate.serializers import CreateEstateSerializer
+
 
 
 class NearestEstatesAPIView(views.APIView):

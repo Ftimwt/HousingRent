@@ -7,7 +7,7 @@ export const OwnerApi = createApi({
         baseUrl: getApiUrl('/v1/owner/'),
         prepareHeaders: prepareHeaders,
     }),
-    tagTypes: ['owner'],
+    tagTypes: ['owner', 'contract'],
     endpoints: (builder) => ({
         myEstates: builder.query<EstateModel[], void>({
             query: () => ({
@@ -17,14 +17,21 @@ export const OwnerApi = createApi({
         }),
         removeRentRequest: builder.mutation<BaseResponse, number>({
             query: (id) => ({
-                url: `estates/rent/${id}/request`,
+                url: `estates/${id}/request`,
                 method: 'delete',
             }),
-            invalidatesTags: ['owner']
+            invalidatesTags: ['owner', 'contract']
+        }),
+        acceptRentRequest: builder.mutation<BaseResponse, number>({
+            query: (id) => ({
+                url: `estates/${id}/request`,
+                method: 'put',
+            }),
+            invalidatesTags: ['owner', 'contract']
         }),
         requests: builder.query<SendRentListResponseI, void>({
             query: () => ({
-                url: 'estates/rent/requests',
+                url: 'estates/requests',
             }),
             providesTags: ['owner']
         }),
@@ -32,11 +39,28 @@ export const OwnerApi = createApi({
             query: () => ({
                 url: 'estates'
             }),
-            providesTags: ['owner']
+            providesTags: ['owner', 'contract']
+        }),
+        contracts: builder.query<EstateContract, void>({
+            query: () => ({
+                url: 'estates/contracts',
+            }),
+            providesTags: ['owner', 'contract']
+        }),
+        contractInstallments: builder.query<EstateContractInstallments[], void>({
+            query: () => ({
+                url: 'estates/contracts/installments'
+            }),
+            providesTags: ['owner', 'contract']
         })
     })
 });
 
 export const {
-    useMyEstatesQuery
+    useMyEstatesQuery,
+    useRequestsQuery,
+    useAcceptRentRequestMutation,
+    useRemoveRentRequestMutation,
+    useContractsQuery,
+    useContractInstallmentsQuery
 } = OwnerApi;
