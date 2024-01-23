@@ -41,7 +41,7 @@ export const OwnerApi = createApi({
             }),
             providesTags: ['owner', 'contract']
         }),
-        contracts: builder.query<EstateContract, void>({
+        contracts: builder.query<EstateContract[], void>({
             query: () => ({
                 url: 'estates/contracts',
             }),

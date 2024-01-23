@@ -33,40 +33,42 @@ const ContractInstallment = ({items}: ContractInstallmentProps) => {
 }
 
 type ContractItemProps = {
-    item: EstateContract;
+    contract: EstateContract;
 }
 
-const ContractItem = ({item}: ContractItemProps) => {
+const ContractItem = ({contract}: ContractItemProps) => {
     const {modal} = App.useApp();
     const {data, isFetching} = useContractInstallmentsQuery();
 
     const handleClick = () => {
-        modal.info({content: <div dangerouslySetInnerHTML={{__html: item.text}}></div>});
+        modal.info({content: <div dangerouslySetInnerHTML={{__html: contract.text}}></div>});
     }
 
     const handleShowInstallments = () => {
         if (!data) return;
-        modal.info({content: <ContractInstallment items={data?.filter(x => x.contract == item.id )}/>})
+        modal.info({content: <ContractInstallment items={data?.filter(x => x.contract == contract.id )}/>})
     };
+
+    if (!contract) return <></>;
 
     return <List.Item>
         <div className="flex flex-col">
             <Descriptions items={[
                 {
                     label: 'آدرس ملک',
-                    children: item.estate.address,
+                    children: contract?.estate?.address,
                 },
                 {
                     label: 'تاریخ شروع قرارداد',
-                    children: moment(item.start_time).locale('fa').calendar(),
+                    children: moment(contract.start_time).locale('fa').calendar(),
                 },
                 {
                     label: 'تاریخ پایان قرارداد',
-                    children: moment(item.end_time).locale('fa').calendar()
+                    children: moment(contract.end_time).locale('fa').calendar()
                 },
                 {
                     label: 'قیمت قرارداد',
-                    children: convertPrice(item.price)
+                    children: convertPrice(contract.price)
                 },
             ]}/>
             <div className="flex flex-row gap-2">
@@ -81,8 +83,10 @@ const EstateContract = () => {
     const {data, isFetching} = useContractsQuery();
 
 
+    if (!data) return <></>;
+
     return <Loading loading={isFetching}>
-        <List dataSource={data} renderItem={(item) => <ContractItem item={item}/>}/>
+        <List dataSource={data} renderItem={(item) => <ContractItem contract={item}/>}/>
     </Loading>;
 }
 

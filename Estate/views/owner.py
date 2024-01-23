@@ -216,6 +216,15 @@ class EstateRequestsControl(views.APIView):
         return EstateContractInstallment.objects.filter(owner=user).order_by('-id')
 
 
+class OwnerContracts(generics.ListAPIView):
+    queryset = EstateContract
+    serializer_class = EstateContractSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return EstateContract.objects.filter(owner=user).order_by('-id')
+
+
 # دریافت لیست صورت حساب هایی که متعلق به مالک هست و پول به حساب مالک میرود
 class OwnerInstallments(generics.ListAPIView):
     queryset = EstateContractInstallment

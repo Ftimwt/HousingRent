@@ -1,7 +1,7 @@
 from django.urls import path
 
 from Estate.views.owner import EstateIndexViewSet, EstateDetailViewSet, EstateFilesUploadViewSet, EstateRequestsList, \
-    EstateRequestsControl, OwnerInstallments
+    EstateRequestsControl, OwnerInstallments, OwnerContracts
 
 urlpatterns = [
     path('/', EstateIndexViewSet.as_view()),
@@ -10,5 +10,5 @@ urlpatterns = [
     path('/requests', EstateRequestsList.as_view()),
     path('/<int:req_id>/request', EstateRequestsControl.as_view()),
     path('/contracts/installments', OwnerInstallments.as_view()),
-    path('/contracts', OwnerInstallments.as_view())
+    path('/contracts', OwnerContracts.as_view())
 ]
